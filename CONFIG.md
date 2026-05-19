@@ -202,3 +202,24 @@ fc-cache -fv
 ```
 
 This populates `~/.config/hypr/`, `~/.config/kitty/`, and `~/.config/micro/` in one shot, plus registers the Nerd Font with fontconfig. If any of those directories already exist with your own settings, back them up first (e.g. `mv ~/.config/hypr ~/.config/hypr.bak`) — `cp -r` overwrites individual files but does not merge them intelligently.
+
+### A note on my preferences
+
+A few places where this config differs from typical Arch / Hyprland setups:
+
+- **Light background.** The kitty theme uses a near-white background (`#f7f7f7`), suited to my 4K ROG panel. For a more conventional dark look, swap `config/kitty/current-theme.conf` for any theme under `/usr/share/kitty/themes/`.
+- **Consolas as system monospace.** My fontconfig pins `Consolas Nerd Font` as the default `monospace` family. Switch to JetBrains Mono, FiraCode, or MesloLGS by editing `config/fontconfig/fonts.conf`.
+- **Super+letter app launchers.** Hyprland is rebound so the most common apps open with a single Super-key chord:
+
+  | Binding | Action |
+  |---|---|
+  | `Super+T` | Terminal (`kitty`) |
+  | `Super+G` | Google Chrome |
+  | `Super+C` | VS Code |
+  | `Super+D` | Dolphin (file manager) |
+  | `Super+R` | Run / launcher |
+  | `Super+Q` | Quit active window |
+  | `Super+F` | Fullscreen |
+  | `Super+V` | Toggle floating |
+  | `Super+M` | Exit Hyprland |
+  | `Super+1` … `Super+0` | Workspace 1 … 10 |
