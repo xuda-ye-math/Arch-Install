@@ -179,7 +179,7 @@ A short list of applications I always install. Some live in the AUR (installed v
 ```bash
 yay -S google-chrome
 yay -S visual-studio-code-bin
-sudo pacman -S github-cli
+yay -S github-cli
 ```
 
 - **`google-chrome`** — Google's official Chrome browser (the open-source upstream is `chromium`, also in the main repos).
