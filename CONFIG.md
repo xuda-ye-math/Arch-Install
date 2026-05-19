@@ -49,6 +49,12 @@ What each package does:
 
 The matching configuration files I use live under [.config/hypr/](.config/hypr/) and [.config/kitty/](.config/kitty/) in this repo — copy them into `~/.config/` after installation.
 
+Once installed and configured, start the compositor from the TTY (text-mode login) with:
+
+```bash
+start-hyprland
+```
+
 ### Audio and video playback
 
 Modern Arch uses [PipeWire](https://wiki.archlinux.org/title/PipeWire) as the unified audio/video server, with WirePlumber as its session manager. This combination replaces the older PulseAudio + JACK stack and works out of the box for both desktop apps and pro-audio workflows.
@@ -73,7 +79,8 @@ A grab-bag of small tools I find myself reaching for constantly:
 
 ```bash
 sudo pacman -S curl cmake os-prober trash-cli zip unzip \
-               man-db imagemagick grim slurp rsync okular gwenview
+               man-db imagemagick grim slurp rsync okular \
+               gwenview fastfetch btop
 ```
 
 - **`curl`**, **`cmake`** — fundamental dev tooling (`git` was already installed earlier alongside Oh My Zsh).
@@ -86,6 +93,8 @@ sudo pacman -S curl cmake os-prober trash-cli zip unzip \
 - **`rsync`** — incremental file copy/sync, indispensable for backups.
 - **`okular`** — KDE's PDF viewer (good annotation support).
 - **`gwenview`** — KDE's image viewer.
+- **`fastfetch`** — the most-liked system and hardware display tool. Print a nicely formatted summary of your distro, kernel, CPU, GPU, memory, etc. by simply running `fastfetch` (the modern successor to `neofetch`).
+- **`btop`** — convenient system monitor in the terminal. Shows live CPU/memory/disk/network usage with mouse-clickable, color-coded panels — a modern replacement for `top`/`htop`.
 
 ### NVIDIA drivers
 
@@ -104,6 +113,52 @@ The NVIDIA kernel modules are not loaded into the currently running kernel — a
 > ⚠️ **Important:** NVIDIA + Wayland still has rough edges. After installing the drivers, reboot, then verify with `nvidia-smi` that the kernel module loaded correctly. If you see flickering or black screens under Hyprland, consult the [Hyprland NVIDIA page](https://wiki.hyprland.org/Nvidia/) for the current set of environment variables and `modprobe` tweaks.
 
 If your card is older than Turing or you encounter issues with the open modules, fall back to the proprietary blob with `sudo pacman -S nvidia nvidia-utils` instead.
+
+### Install fonts
+
+A working Arch install needs a sensible set of system fonts before any terminal, browser, or document viewer looks right — Latin text, CJK characters, and emoji all live in separate font files. The following bundle covers everything used by my Hyprland / kitty setup and by the fontconfig defaults in [config/fontconfig/fonts.conf](config/fontconfig/fonts.conf):
+
+```bash
+sudo pacman -S ttf-dejavu ttf-liberation noto-fonts \
+               noto-fonts-cjk noto-fonts-emoji
+yay -S consolas-font
+```
+
+- **`ttf-dejavu`** — the long-standing default sans/serif/mono family on most Linux distros; widely assumed as a fallback by other software.
+- **`ttf-liberation`** — metric-compatible replacements for Arial / Times New Roman / Courier New, so documents authored on Windows render with the right line breaks.
+- **`noto-fonts`** + **`noto-fonts-cjk`** + **`noto-fonts-emoji`** — Google's "no tofu" family. Covers virtually every Unicode script plus full-color emoji. The `-cjk` package is what makes Chinese/Japanese/Korean text display correctly.
+- **`consolas-font`** (AUR) — Microsoft's Consolas, packaged for Arch by the community. Used as the regular (non-Nerd) Consolas family on this system.
+
+#### Install Consolas Nerd Font
+
+The patched **Consolas Nerd Font** (used by the kitty config in this repo) is not available in any package repository — it has to be installed manually from the `.ttf` files. This repo ships them under [fonts/](fonts/); copy them into your per-user font directory and refresh the font cache:
+
+```bash
+mkdir -p ~/.local/share/fonts
+cp fonts/ConsolasNerdFont_*.ttf ~/.local/share/fonts/
+fc-cache -fv
+```
+
+After this, `fc-list | grep -i "consolas nerd"` should list both the Regular and Italic variants, and kitty will pick them up automatically on next launch.
+
+### Chinese input method
+
+[Fcitx5](https://fcitx-im.org/) is the most widely used input method framework on modern Linux desktops. For typing Chinese (and other CJK languages), install the framework plus the Chinese add-on bundle and the graphical configuration tool:
+
+```bash
+sudo pacman -S fcitx5 fcitx5-chinese-addons fcitx5-configtool
+```
+
+- **`fcitx5`** — the core input method framework.
+- **`fcitx5-chinese-addons`** — bundles Pinyin, Shuangpin, Wubi, and Cangjie engines.
+- **`fcitx5-configtool`** — a GUI for adding/reordering input methods and tweaking key bindings.
+
+Two helper commands you will use regularly:
+
+- **`fcitx5-remote`** — activates (starts) the Fcitx5 service. Run it once after login if Fcitx5 is not already autostarted by your session; my `hyprland.conf` calls it via `exec-once` so it launches with the desktop.
+- **`fcitx5-configtool`** — opens the configuration GUI, where you add **Pinyin** (or whichever engine you prefer) to the active input method list and tweak key bindings.
+
+The default toggle to switch between Chinese and English is **Ctrl+Space**.
 
 ### Install yay (AUR helper)
 
@@ -133,3 +188,16 @@ sudo pacman -S github-cli
 - **`github-cli`** — GitHub's official command-line tool (`gh`). Great for cloning repos, opening pull requests, and authenticating `git push`/`pull` without juggling personal access tokens. Run `gh auth login` once after installation to link the CLI to your GitHub account.
 
 Add anything else here that you find yourself installing repeatedly — `yay -Ss <keyword>` is a quick way to search both the official repos and the AUR at once.
+
+### Copy my settings of Hyprland, kitty and micro
+
+From the root of this cloned repository, drop my dotfiles into `~/.config/` and install the Consolas Nerd Font that the kitty config depends on (the font block is repeated from the [Install fonts](#install-fonts) section above — running it twice is harmless):
+
+```bash
+mkdir -p ~/.config ~/.local/share/fonts
+cp -r config/{hypr,kitty,micro} ~/.config/
+cp fonts/ConsolasNerdFont_*.ttf ~/.local/share/fonts/
+fc-cache -fv
+```
+
+This populates `~/.config/hypr/`, `~/.config/kitty/`, and `~/.config/micro/` in one shot, plus registers the Nerd Font with fontconfig. If any of those directories already exist with your own settings, back them up first (e.g. `mv ~/.config/hypr ~/.config/hypr.bak`) — `cp -r` overwrites individual files but does not merge them intelligently.
