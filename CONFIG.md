@@ -24,6 +24,19 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 
 After it finishes, log out and back in so the shell change takes effect. Theme and plugin configuration is then done via `~/.zshrc`.
 
+### Install yay (AUR helper)
+
+Arch's official repositories cover most software, but a lot of community packages — proprietary apps, dev tools, niche utilities — live in the [Arch User Repository (AUR)](https://aur.archlinux.org/). `yay` is a friendly `pacman`-like wrapper that automates downloading, building, and installing AUR packages. Bootstrap it once by building it from source:
+
+```bash
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+cd .. && rm -rf yay   # the build directory is no longer needed
+```
+
+After this initial bootstrap, `yay` itself is a regular installed package and updates alongside the rest of the system via `yay -Syu`.
+
 ### Install Hyprland
 
 [Hyprland](https://hypr.land/) is a modern, GPU-accelerated tiling Wayland compositor. The package list below installs Hyprland itself together with the supporting pieces I rely on day-to-day:
@@ -119,9 +132,8 @@ If your card is older than Turing or you encounter issues with the open modules,
 A working Arch install needs a sensible set of system fonts before any terminal, browser, or document viewer looks right — Latin text, CJK characters, and emoji all live in separate font files. The following bundle covers everything used by my Hyprland / kitty setup and by the fontconfig defaults in [config/fontconfig/fonts.conf](config/fontconfig/fonts.conf):
 
 ```bash
-sudo pacman -S ttf-dejavu ttf-liberation noto-fonts \
-               noto-fonts-cjk noto-fonts-emoji
-yay -S consolas-font
+yay -S ttf-dejavu ttf-liberation noto-fonts \
+        noto-fonts-cjk noto-fonts-emoji consolas-font
 ```
 
 - **`ttf-dejavu`** — the long-standing default sans/serif/mono family on most Linux distros; widely assumed as a fallback by other software.
@@ -146,7 +158,7 @@ After this, `fc-list | grep -i "consolas nerd"` should list both the Regular and
 [Fcitx5](https://fcitx-im.org/) is the most widely used input method framework on modern Linux desktops. For typing Chinese (and other CJK languages), install the framework plus the Chinese add-on bundle and the graphical configuration tool:
 
 ```bash
-sudo pacman -S fcitx5 fcitx5-chinese-addons fcitx5-configtool
+yay -S fcitx5 fcitx5-chinese-addons fcitx5-configtool
 ```
 
 - **`fcitx5`** — the core input method framework.
@@ -159,19 +171,6 @@ Two helper commands you will use regularly:
 - **`fcitx5-configtool`** — opens the configuration GUI, where you add **Pinyin** (or whichever engine you prefer) to the active input method list and tweak key bindings.
 
 The default toggle to switch between Chinese and English is **Ctrl+Space**.
-
-### Install yay (AUR helper)
-
-Arch's official repositories cover most software, but a lot of community packages — proprietary apps, dev tools, niche utilities — live in the [Arch User Repository (AUR)](https://aur.archlinux.org/). `yay` is a friendly `pacman`-like wrapper that automates downloading, building, and installing AUR packages. Bootstrap it once by building it from source:
-
-```bash
-git clone https://aur.archlinux.org/yay.git
-cd yay
-makepkg -si
-cd .. && rm -rf yay   # the build directory is no longer needed
-```
-
-After this initial bootstrap, `yay` itself is a regular installed package and updates alongside the rest of the system via `yay -Syu`.
 
 ### Useful third-party applications
 
