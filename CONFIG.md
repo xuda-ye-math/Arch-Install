@@ -114,7 +114,8 @@ sudo pacman -S curl cmake os-prober trash-cli zip unzip \
 If your machine has a recent NVIDIA GPU (Turing or newer), the open-source kernel modules are the recommended choice as of 2025:
 
 ```bash
-sudo pacman -S nvidia-open nvidia-utils vulkan-icd-loader
+sudo pacman -S nvidia-open nvidia-utils
+sudo pacman -S vulkan-icd-loader
 ```
 
 - **`nvidia-open`** — open-source NVIDIA kernel modules (replaces the legacy `nvidia` package on supported GPUs).
@@ -158,7 +159,8 @@ After this, `fc-list | grep -i "consolas nerd"` should list both the Regular and
 [Fcitx5](https://fcitx-im.org/) is the most widely used input method framework on modern Linux desktops. For typing Chinese (and other CJK languages), install the framework plus the Chinese add-on bundle and the graphical configuration tool:
 
 ```bash
-yay -S fcitx5 fcitx5-chinese-addons fcitx5-configtool
+yay -S fcitx5 fcitx5-chinese-addons
+yay -S fcitx5-configtool
 ```
 
 - **`fcitx5`** — the core input method framework.
