@@ -174,6 +174,21 @@ yay -S fcitx5-configtool
 
 中英文切换的默认快捷键是 **Ctrl+Space**。
 
+### 安装 TeX Live
+
+使用 `pacman` 从 Arch 官方仓库安装 TeX Live 组件：
+
+```bash
+sudo pacman -S texlive-basic texlive-bin texlive-binextra texlive-latex \
+  texlive-latexextra texlive-latexrecommended texlive-luatex texlive-xetex \
+  texlive-fontsrecommended texlive-mathscience texlive-pictures \
+  texlive-langchinese texlive-langcjk
+```
+
+这是我常用的一组：核心引擎(`texlive-bin`、`texlive-latex`、`texlive-luatex`、`texlive-xetex`)、推荐与扩展的 LaTeX 宏包、数学与科学宏集、绘图支持以及中文/CJK 语言数据。
+
+> ⚠️ **使用 AUR 的 `texlive-full` 元包时要谨慎。** 它在构建过程中有时会直接从 TeX Live 官方网站拉取一个比当前 AUR 版本更新的发行版，这会让你最终装到一组版本不一致的组件，跟官方 Arch 的 `texlive-*` 包对不上号，可能导致编译失败直到版本再次同步。上面这些独立的 `texlive-*` 包通过 `pacman -Syu` 保持一致版本，我觉得更可控。
+
 ### 实用第三方应用
 
 我每次都会安装的一些应用。其中有些位于 AUR(通过 `yay` 安装)，其他则已经在 Arch 官方仓库中:
