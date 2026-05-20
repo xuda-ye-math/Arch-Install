@@ -461,3 +461,7 @@ sudo pacman -Syu
 你也可以一直停留在纯命令行模式——对于服务器、开发机器或极简主义的搭建,这是完全合理的选择。Arch Wiki 上有一篇非常好的[可用桌面环境概览](https://wiki.archlinux.org/title/Desktop_environment),其中包含安装命令和截图。
 
 本指南到这里就结束了,因为再往后的内容都取决于个人偏好。祝你享受新的 Arch 系统。
+
+---
+
+*本中文译文由 Claude Code 自动生成。若与英文原版存在出入,请以英文版 [INSTALL.md](INSTALL.md) 为准。*

@@ -231,3 +231,7 @@ fc-cache -fv
 <p align="center">
   <img src="screenshot.png" alt="My configured Hyprland desktop" width="900">
 </p>
+
+---
+
+*本中文译文由 Claude Code 自动生成。若与英文原版存在出入,请以英文版 [CONFIG.md](CONFIG.md) 为准。*
