@@ -190,6 +190,33 @@ yay -S github-cli
 
 Add anything else here that you find yourself installing repeatedly — `yay -Ss <keyword>` is a quick way to search both the official repos and the AUR at once.
 
+### Btrfs snapshots with btrbk
+
+If your root filesystem is Btrfs, [btrbk](https://digint.ch/btrbk/) gives you on-demand snapshots with retention in a single command — no daemon, no systemd timer. I use it for quick safety snapshots before risky updates or experiments.
+
+```bash
+sudo pacman -S btrbk
+```
+
+Install the config shipped in this repo and create the snapshot directory:
+
+```bash
+sudo install -Dm644 config/btrbk/btrbk.conf /etc/btrbk/btrbk.conf
+sudo mkdir -p /.snapshots
+```
+
+The config (see [config/btrbk/btrbk.conf](config/btrbk/btrbk.conf)) snapshots the root subvolume into `/.snapshots/`, keeps 7 daily + 4 weekly versions, and never prunes anything less than 2 days old. Trigger it manually whenever you want — each run takes a fresh snapshot and prunes anything past its retention window:
+
+```bash
+sudo btrbk -n run   # dry-run — preview the actions; touches nothing on disk
+sudo btrbk run      # actually create snapshot + prune
+sudo btrbk list snapshots
+```
+
+The `-n` (dry-run) flag is worth getting in the habit of: btrbk prints exactly which subvolumes it *would* snapshot and which old ones it *would* delete, but skips every actual btrfs call. Treat it as a preview of what the real `btrbk run` will do — useful for sanity-checking a config change before letting it touch your filesystem.
+
+Restore a file by copying it back out of `/.snapshots/<timestamp>/`, or roll the whole subvolume back with `btrfs subvolume snapshot` in the other direction. If you ever want this to run on a schedule, enable the `btrbk.timer` unit shipped by the package.
+
 ### Copy my settings of Hyprland, kitty and micro
 
 From the root of this cloned repository, drop my dotfiles into `~/.config/` and install the Consolas Nerd Font that the kitty config depends on (the font block is repeated from the [Install fonts](#install-fonts) section above — running it twice is harmless):
