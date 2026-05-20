@@ -190,6 +190,33 @@ yay -S github-cli
 
 如果有其他你反复安装的软件，也可以加在这里 —— `yay -Ss <关键词>` 是一次性搜索官方仓库和 AUR 的便捷方式。
 
+### 使用 btrbk 做 Btrfs 快照
+
+如果你的根文件系统是 Btrfs，[btrbk](https://digint.ch/btrbk/) 能用一条命令完成带保留策略的按需快照 —— 不需要守护进程，也不需要 systemd 计时器。我用它在风险较高的更新或实验之前，先打一个安全快照。
+
+```bash
+sudo pacman -S btrbk
+```
+
+把本仓库附带的配置文件安装到位，并创建快照目录:
+
+```bash
+sudo install -Dm644 config/btrbk/btrbk.conf /etc/btrbk/btrbk.conf
+sudo mkdir -p /.snapshots
+```
+
+这份配置(见 [config/btrbk/btrbk.conf](config/btrbk/btrbk.conf))会把根子卷快照到 `/.snapshots/` 下，保留最近 7 个每日 + 4 个每周版本,且永远不会删除 2 天以内的快照。需要时手动触发即可 —— 每次运行都会新建一个快照，并清理掉所有超出保留期的旧快照:
+
+```bash
+sudo btrbk -n run   # 试运行 —— 预览要做的动作,不修改磁盘上的任何东西
+sudo btrbk run      # 实际创建快照 + 清理
+sudo btrbk list snapshots
+```
+
+养成使用 `-n`(试运行)的习惯很有好处:btrbk 会清楚地打印出它*将要*快照哪些子卷、*将要*删除哪些旧快照,但完全跳过所有真正的 btrfs 调用。可以把它当作真正 `btrbk run` 的预览 —— 在让配置改动作用到文件系统之前先做个理智检查,非常有用。
+
+要恢复单个文件,从 `/.snapshots/<时间戳>/` 把它复制出来即可;如果要回滚整个子卷,可以反过来用 `btrfs subvolume snapshot` 操作。如果将来想让它按计划运行,启用 btrbk 包里附带的 `btrbk.timer` 单元即可。
+
 ### 复制我的 Hyprland、kitty 和 micro 配置
 
 在克隆下来的本仓库根目录下，把我的 dotfiles 放入 `~/.config/`，同时安装 kitty 配置所需的 Consolas Nerd Font(字体那一段与上面[安装字体](#安装字体)一节中的命令重复 —— 重复执行也没有副作用):
