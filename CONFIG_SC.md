@@ -1,0 +1,233 @@
+## 个人配置指南
+
+*作者:Xuda Ye — [ye481@purdue.edu](mailto:ye481@purdue.edu)*
+
+本文档承接 [INSTALL_SC.md](INSTALL_SC.md) 结束之处。安装指南得到的基础系统刻意保持最小化——能启动、能登录、能联网,仅此而已。下面的章节涵盖了我在每一台新装好的 Arch 机器上都会额外安装的内容,把它变成一台日常使用的工作站:更友好的 shell、平铺式 Wayland 合成器、可用的音视频、常用命令行工具、显卡驱动、AUR 助手,以及若干 GUI 应用。
+
+可以按需挑选。每个小节都是自包含的,只跑你需要的那几节即可。
+
+### 安装 zsh 和 Oh My Zsh
+
+`zsh` 是一种交互式 shell,在补全、历史和主题方面比 `bash` 强得多。[Oh My Zsh](https://ohmyz.sh/) 是建立在 `zsh` 之上的一个社区框架,捆绑了数百个插件和主题,是开箱即得一个精致提示符最简单的方式。
+
+同时安装 `zsh` 和 `git` —— 后者是 Oh My Zsh 安装器克隆仓库时所需:
+
+```bash
+sudo pacman -S zsh git
+```
+
+接着安装 Oh My Zsh —— 官方的一行式安装器会把框架拉取到 `~/.oh-my-zsh`,并询问是否把默认登录 shell 切换为 `zsh`:
+
+```bash
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+```
+
+完成后,注销再重新登录,shell 的切换才会生效。之后主题和插件的配置都通过 `~/.zshrc` 进行。
+
+### 安装 yay (AUR 助手)
+
+Arch 的官方仓库覆盖了大部分软件,但还有大量社区软件包 —— 专有应用、开发工具、小众实用程序 —— 存在于 [Arch 用户仓库 (AUR)](https://aur.archlinux.org/) 中。`yay` 是一个类似 `pacman` 的友好封装,能自动下载、编译并安装 AUR 软件包。通过从源码构建一次性引导它:
+
+```bash
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+cd .. && rm -rf yay   # 构建目录已不再需要
+```
+
+完成这一步初始引导之后,`yay` 自己就是一个普通的已安装软件包了,日常通过 `yay -Syu` 跟其他软件包一起升级。
+
+### 安装 Hyprland
+
+[Hyprland](https://hypr.land/) 是一款现代化的、GPU 加速的平铺式 Wayland 合成器。下面这一条命令安装 Hyprland 本体,以及我日常依赖的配套部件:
+
+```bash
+sudo pacman -S kitty dolphin dunst waybar qt5-wayland qt6-wayland \
+               hyprland hyprlauncher hyprpaper hyprpolkitagent \
+               xdg-desktop-portal-hyprland
+```
+
+每个软件包的作用:
+
+- **`hyprland`** —— 合成器本体(也就是窗口管理器)。
+- **`kitty`** —— 一款快速、GPU 加速的终端模拟器。是我在 Hyprland 下偏好的终端。
+- **`dolphin`** —— KDE 的图形化文件管理器。
+- **`dunst`** —— 轻量级通知守护进程(兼容 Wayland)。
+- **`waybar`** —— 顶部/底部状态栏(时钟、工作区、系统托盘等)。
+- **`hyprlauncher`** —— Hyprland 的应用启动器。
+- **`hyprpaper`** —— 壁纸守护进程。
+- **`hyprpolkitagent`** —— polkit 认证代理(让 GUI 应用在需要 root 权限时弹出密码提示)。
+- **`xdg-desktop-portal-hyprland`** —— 在 Hyprland 上实现 XDG 桌面 portal(屏幕共享、flatpak 应用中的文件选择器等会用到)。
+- **`qt5-wayland`** / **`qt6-wayland`** —— Qt 平台插件,让 Qt 应用以原生 Wayland 方式渲染,而不是退回到 XWayland。
+
+我所用的配置文件都在本仓库的 [.config/hypr/](.config/hypr/) 和 [.config/kitty/](.config/kitty/) 下 —— 安装完成后把它们复制到 `~/.config/`。
+
+安装并配置好之后,从 TTY(文本模式登录)中通过下面命令启动合成器:
+
+```bash
+start-hyprland
+```
+
+### 音视频播放
+
+现代的 Arch 使用 [PipeWire](https://wiki.archlinux.org/title/PipeWire) 作为统一的音视频服务器,以 WirePlumber 作为它的会话管理器。这一组合替代了较旧的 PulseAudio + JACK 体系,无论是桌面应用还是专业音频工作流,都是开箱即用。
+
+```bash
+sudo pacman -S usbutils pipewire pipewire-alsa pipewire-pulse \
+               alsa-utils wireplumber mpv
+```
+
+- **`pipewire`** —— 核心的音视频服务器。
+- **`pipewire-alsa`** / **`pipewire-pulse`** —— 兼容层,让现有的 ALSA 和 PulseAudio 应用透明地通过 PipeWire 进行音频路由。
+- **`wireplumber`** —— PipeWire 的会话和策略管理器。
+- **`alsa-utils`** —— 提供 `alsamixer` 及其他低层工具,用于检查/调试声卡。
+- **`usbutils`** —— `lsusb` 及相关工具,在排查 USB 音频设备时很有用。
+- **`mpv`** —— 一款极简、可脚本化的媒体播放器。无论是本地视频还是流式 URL,都是不错的默认选择。
+
+安装完成后,用户级的 PipeWire 服务应在下次登录时自动启动。可以用 `mpv <某个文件>` 或 `speaker-test -c 2` 测试播放是否正常。
+
+### 命令行工具
+
+一组我经常用到的小工具的"杂货包":
+
+```bash
+sudo pacman -S curl cmake os-prober trash-cli zip unzip \
+               man-db imagemagick grim slurp rsync okular \
+               gwenview fastfetch btop
+```
+
+- **`curl`**、**`cmake`** —— 基础开发工具(`git` 已经在 Oh My Zsh 那一节随之安装)。
+- **`os-prober`** —— 检测磁盘上已有的其他操作系统(如果你将来要双系统并希望 GRUB 同时列出它们,这个很有用)。
+- **`trash-cli`** —— `rm` 的更安全替代品:`trash <文件>` 会把文件移到 freedesktop 回收站,而不是永久删除。
+- **`zip`** / **`unzip`** —— 经典的归档工具(Arch 默认安装 `tar` 和 `gzip`,但不包含这两个)。
+- **`man-db`** —— 构建 `man` 数据库,使手册页可被搜索。
+- **`imagemagick`** —— 提供 `convert`、`mogrify` 等命令行图像处理工具。
+- **`grim`** + **`slurp`** —— Wayland 原生截图工具。`slurp` 让你选择区域,`grim` 进行截取。
+- **`rsync`** —— 增量式文件复制/同步,做备份时必备。
+- **`okular`** —— KDE 的 PDF 阅读器(注释支持很好)。
+- **`gwenview`** —— KDE 的图像查看器。
+- **`fastfetch`** —— 最受欢迎的系统和硬件信息显示工具。只要运行 `fastfetch`,就能打印出格式漂亮的发行版、内核、CPU、GPU、内存等信息摘要(`neofetch` 的现代继任者)。
+- **`btop`** —— 终端中方便的系统监视器。以可用鼠标点击、色彩分明的面板实时显示 CPU/内存/磁盘/网络使用情况——`top`/`htop` 的现代替代品。
+
+### NVIDIA 显卡驱动
+
+如果你的机器装有较新的 NVIDIA 显卡(Turing 架构或更新),截至 2025 年,开源内核模块是推荐选择:
+
+```bash
+sudo pacman -S nvidia-open nvidia-utils
+sudo pacman -S vulkan-icd-loader
+```
+
+- **`nvidia-open`** —— 开源的 NVIDIA 内核模块(在受支持的 GPU 上替代了旧的 `nvidia` 包)。
+- **`nvidia-utils`** —— 专有的用户态库(OpenGL、CUDA stubs、`nvidia-smi` 等)。
+- **`vulkan-icd-loader`** —— Vulkan loader,大多数现代游戏和 GPU 加速应用都需要它。
+
+NVIDIA 内核模块并不会被加载进当前运行的内核 —— 驱动要真正生效,需要**重启**。否则 `nvidia-smi` 会失败,Hyprland 也可能拒绝启动。
+
+> ⚠️ **重要:**NVIDIA + Wayland 至今仍有不少粗糙之处。装完驱动后请重启,然后用 `nvidia-smi` 确认内核模块已正确加载。如果在 Hyprland 下看到闪屏或黑屏,请查阅 [Hyprland NVIDIA 页面](https://wiki.hyprland.org/Nvidia/)获取当前一组推荐的环境变量和 `modprobe` 调整。
+
+如果你的显卡比 Turing 更老,或者使用开源模块时遇到问题,可以退回到专有 blob:`sudo pacman -S nvidia nvidia-utils`。
+
+### 安装字体
+
+一个能用的 Arch 安装需要一组合理的系统字体,终端、浏览器、文档查看器才能正常显示 —— 拉丁文、CJK(中日韩)字符、emoji 分别在不同的字体文件中。下面这套字体覆盖了我的 Hyprland / kitty 配置以及 [config/fontconfig/fonts.conf](config/fontconfig/fonts.conf) 中默认设置所需要的一切:
+
+```bash
+yay -S ttf-dejavu ttf-liberation noto-fonts \
+        noto-fonts-cjk noto-fonts-emoji consolas-font
+```
+
+- **`ttf-dejavu`** —— 大部分 Linux 发行版长期以来的默认 sans/serif/mono 字体族;许多软件都默认它作为兜底。
+- **`ttf-liberation`** —— 与 Arial / Times New Roman / Courier New 度量兼容的替代字体,这样 Windows 上编写的文档在 Linux 上也能保持正确的换行。
+- **`noto-fonts`** + **`noto-fonts-cjk`** + **`noto-fonts-emoji`** —— 谷歌的 "no tofu"(没有豆腐块)字体族。几乎覆盖所有 Unicode 文字以及全彩 emoji。`-cjk` 包就是让中文/日文/韩文能正常显示的关键。
+- **`consolas-font`**(AUR) —— 微软的 Consolas,由社区打包到 Arch 上。在本系统中用作常规(非 Nerd)的 Consolas 字体族。
+
+#### 安装 Consolas Nerd Font
+
+打过补丁的 **Consolas Nerd Font**(本仓库的 kitty 配置正在使用)在任何软件仓库中都找不到 —— 必须从 `.ttf` 文件手动安装。本仓库在 [fonts/](fonts/) 下直接附带了这些字体文件;把它们复制到用户字体目录下,然后刷新字体缓存:
+
+```bash
+mkdir -p ~/.local/share/fonts
+cp fonts/ConsolasNerdFont_*.ttf ~/.local/share/fonts/
+fc-cache -fv
+```
+
+之后,`fc-list | grep -i "consolas nerd"` 应当能列出 Regular 和 Italic 两个变体,kitty 在下次启动时也会自动识别它们。
+
+### 中文输入法
+
+[Fcitx5](https://fcitx-im.org/) 是现代 Linux 桌面上使用最广泛的输入法框架。要输入中文(或其他 CJK 语言),安装框架本身、中文扩展包,以及图形化配置工具:
+
+```bash
+yay -S fcitx5 fcitx5-chinese-addons
+yay -S fcitx5-configtool
+```
+
+- **`fcitx5`** —— 输入法框架本体。
+- **`fcitx5-chinese-addons`** —— 捆绑了拼音、双拼、五笔、仓颉等输入引擎。
+- **`fcitx5-configtool`** —— 添加/排序输入法以及调整快捷键的图形化工具。
+
+你会经常用到两条辅助命令:
+
+- **`fcitx5-remote`** —— 激活(启动)Fcitx5 服务。如果你的会话还没有自动启动 Fcitx5,可以在登录后运行一次;我的 `hyprland.conf` 通过 `exec-once` 在桌面启动时一起调用它。
+- **`fcitx5-configtool`** —— 打开配置 GUI,在这里把**拼音**(或你偏好的任何引擎)加入到活动输入法列表,以及调整快捷键。
+
+中英文切换的默认快捷键是 **Ctrl+Space**。
+
+### 实用第三方应用
+
+我每次都会安装的一些应用。其中有些位于 AUR(通过 `yay` 安装),其他则已经在 Arch 官方仓库中:
+
+```bash
+yay -S google-chrome
+yay -S visual-studio-code-bin
+yay -S github-cli
+```
+
+- **`google-chrome`** —— 谷歌官方的 Chrome 浏览器(开源上游是 `chromium`,也在主仓库中提供)。
+- **`visual-studio-code-bin`** —— 微软官方的 VS Code 二进制版(`-bin` 后缀表示这是一个预编译包;也可以通过 `code` 包从源码编译,但耗时长得多)。
+- **`github-cli`** —— GitHub 官方命令行工具(`gh`)。在克隆仓库、提交 pull request 以及在 `git push`/`pull` 中无需折腾 Personal Access Token 等场景下都非常方便。安装后运行一次 `gh auth login` 把 CLI 关联到你的 GitHub 账号。
+
+如果有其他你反复安装的软件,也可以加在这里 —— `yay -Ss <关键词>` 是一次性搜索官方仓库和 AUR 的便捷方式。
+
+### 复制我的 Hyprland、kitty 和 micro 配置
+
+从克隆下来的本仓库根目录,把我的 dotfiles 投放到 `~/.config/` 中,同时安装 kitty 配置依赖的 Consolas Nerd Font(字体那一段与上面[安装字体](#安装字体)节中的命令重复 —— 跑两次也没有副作用):
+
+```bash
+mkdir -p ~/.config ~/.local/share/fonts
+cp -r config/{hypr,kitty,micro} ~/.config/
+cp fonts/ConsolasNerdFont_*.ttf ~/.local/share/fonts/
+fc-cache -fv
+```
+
+这一条会把 `~/.config/hypr/`、`~/.config/kitty/`、`~/.config/micro/` 一次性填好,并将 Nerd Font 注册到 fontconfig。如果上述目录里已经存有你自己的配置,请先备份(例如 `mv ~/.config/hypr ~/.config/hypr.bak`)—— `cp -r` 会覆盖单个文件,但不会做智能合并。
+
+### 关于个人偏好的几点说明
+
+这份配置在以下几处和典型的 Arch / Hyprland 配置有所不同:
+
+- **浅色背景。** kitty 主题使用了接近白色的背景(`#f7f7f7`),配合我的 4K ROG 屏幕。如果你想要更常见的深色风格,可以把 `config/kitty/current-theme.conf` 替换成 `/usr/share/kitty/themes/` 下的任何一个主题。
+- **Consolas 作为系统等宽字体。** 我的 fontconfig 把 `Consolas Nerd Font` 固定为默认 `monospace` 字体。如果想换成 JetBrains Mono、FiraCode 或 MesloLGS,只需修改 `config/fontconfig/fonts.conf`。
+- **Super+字母 应用启动快捷键。** 我重新映射了 Hyprland 的快捷键,使最常用的应用都可以通过一组 Super 键 + 单字母快速打开:
+
+  | 快捷键 | 动作 |
+  |---|---|
+  | `Super+T` | 终端(`kitty`) |
+  | `Super+G` | Google Chrome |
+  | `Super+C` | VS Code |
+  | `Super+D` | Dolphin(文件管理器) |
+  | `Super+R` | Run / 启动器 |
+  | `Super+Q` | 关闭当前窗口 |
+  | `Super+F` | 全屏 |
+  | `Super+V` | 切换浮动模式 |
+  | `Super+M` | 退出 Hyprland |
+  | `Super+1` … `Super+0` | 切换到工作区 1 … 10 |
+
+### 最终效果
+
+按上面所有步骤安装好、并把 dotfiles 放到位之后,我的 ROG 桌面机上的画面看起来是这样:
+
+<p align="center">
+  <img src="screenshot.png" alt="My configured Hyprland desktop" width="900">
+</p>

@@ -223,3 +223,11 @@ A few places where this config differs from typical Arch / Hyprland setups:
   | `Super+V` | Toggle floating |
   | `Super+M` | Exit Hyprland |
   | `Super+1` … `Super+0` | Workspace 1 … 10 |
+
+### What it ends up looking like
+
+Once everything above is installed and the dotfiles are in place, the desktop on my ROG machine looks like this:
+
+<p align="center">
+  <img src="screenshot.png" alt="My configured Hyprland desktop" width="900">
+</p>
