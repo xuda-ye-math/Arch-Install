@@ -268,6 +268,10 @@ A few places where this config differs from typical Arch / Hyprland setups:
   | `Super+M` | Exit Hyprland |
   | `Super+1` … `Super+0` | Workspace 1 … 10 |
   | `Super+Left` / `Super+Right` | Lower / raise system volume (5% step) |
+  | `Super+Z` | Screenshot of a slurp-selected region → `$HOME/YYMMDD_HH-MM-SS.png` |
+  | `Super+X` | Full-screen screenshot → `$HOME/YYMMDD_HH-MM-SS.png` |
+
+  The screenshot bindings need `grim` and `slurp` (`sudo pacman -S grim slurp`). Neither prints an on-screen confirmation when triggered from the keybind — check `$HOME` for the new file, or run the same command in a terminal to see any error output.
 
 - **Brightness control is opt-in.** The `Super+Up` / `Super+Down` brightness bindings are shipped commented out in `config/hypr/hyprland.conf` because the right command depends on the hardware:
   - **Laptops** (built-in panel): `sudo pacman -S brightnessctl`, then uncomment the `brightnessctl` lines.

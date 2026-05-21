@@ -265,6 +265,15 @@ fc-cache -fv
   | `Super+V` | 切换浮动模式 |
   | `Super+M` | 退出 Hyprland |
   | `Super+1` … `Super+0` | 切换到工作区 1 … 10 |
+  | `Super+Z` | 用 slurp 框选区域截图 → `$HOME/YYMMDD_HH-MM-SS.png` |
+  | `Super+X` | 全屏截图 → `$HOME/YYMMDD_HH-MM-SS.png` |
+
+  截图快捷键依赖 `grim` 与 `slurp`(`sudo pacman -S grim slurp`)。通过快捷键触发时没有任何屏幕提示 —— 直接到 `$HOME` 查看新生成的文件，或者把同一条命令贴进终端运行以查看错误输出。
+
+- **亮度调节是可选项。** `Super+Up` / `Super+Down` 亮度快捷键在 `config/hypr/hyprland.conf` 中默认是被注释掉的，因为具体要用哪条命令取决于硬件:
+  - **笔记本**(内置面板): `sudo pacman -S brightnessctl`，然后取消注释 `brightnessctl` 那两行。
+  - **带外接显示器的台式机**(DDC/CI): `sudo pacman -S ddcutil`，然后取消注释 `ddcutil` 那两行。`--bus N` 参数与具体显示器相关 —— 运行 `ddcutil detect` 查看正确的总线号(或者把它的输出贴给 AI 让它帮你选)。这两种方案分别在我的台式机和笔记本上测试过。
+  - **NVIDIA GPU 输出**: 直接跳过这套快捷键，安装 `nvidia-settings` —— 显示由 NVIDIA 驱动接管时，用它的 GUI 调节亮度/伽马最方便。
 
 ### 最终效果
 
