@@ -1,0 +1,20 @@
+{
+    "workbench.colorTheme": "Light 2026",
+    "editor.fontFamily": "Consolas Nerd Font",
+    "editor.wordWrap": "on",
+    "window.zoomLevel": 0.4,
+    "chat.fontSize": 14,
+    "chat.editor.fontFamily": "Consolas Nerd Font",
+    "terminal.integrated.cursorStyle": "line",
+    "editor.fontSize": 15,
+    "terminal.integrated.fontSize": 15,
+    "claudeCode.useTerminal": true,
+    "python.venvPath": "~/.envs",
+    "explorer.confirmDragAndDrop": false,
+    "explorer.confirmDelete": false,
+    "makefile.configureOnOpen": true,
+    "editor.unicodeHighlight.ambiguousCharacters": false,
+    "terminal.external.linuxExec": "kitty",
+    "terminal.integrated.fontFamily": "Consolas Nerd Font",
+    "terminal.integrated.fontWeightBold": "normal"
+}

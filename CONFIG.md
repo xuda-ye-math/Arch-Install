@@ -232,18 +232,19 @@ The `-n` (dry-run) flag is worth getting in the habit of: btrbk prints exactly w
 
 Restore a file by copying it back out of `/.snapshots/<timestamp>/`, or roll the whole subvolume back with `btrfs subvolume snapshot` in the other direction. If you ever want this to run on a schedule, enable the `btrbk.timer` unit shipped by the package.
 
-### Copy my settings of Hyprland, kitty and micro
+### Copy my settings of Hyprland, kitty, micro and VS Code
 
 From the root of this cloned repository, drop my dotfiles into `~/.config/` and install the Consolas Nerd Font that the kitty config depends on (the font block is repeated from the [Install fonts](#install-fonts) section above — running it twice is harmless):
 
 ```bash
-mkdir -p ~/.config ~/.local/share/fonts
+mkdir -p ~/.config ~/.config/Code/User ~/.local/share/fonts
 cp -r config/{hypr,kitty,micro} ~/.config/
+cp config/Code/{settings.json,keybindings.json} ~/.config/Code/User/
 cp fonts/ConsolasNerdFont_*.ttf ~/.local/share/fonts/
 fc-cache -fv
 ```
 
-This populates `~/.config/hypr/`, `~/.config/kitty/`, and `~/.config/micro/` in one shot, plus registers the Nerd Font with fontconfig. If any of those directories already exist with your own settings, back them up first (e.g. `mv ~/.config/hypr ~/.config/hypr.bak`) — `cp -r` overwrites individual files but does not merge them intelligently.
+This populates `~/.config/hypr/`, `~/.config/kitty/`, and `~/.config/micro/` in one shot, drops my VS Code `settings.json` and `keybindings.json` into `~/.config/Code/User/`, plus registers the Nerd Font with fontconfig. If any of those directories already exist with your own settings, back them up first (e.g. `mv ~/.config/hypr ~/.config/hypr.bak`) — `cp -r` overwrites individual files but does not merge them intelligently.
 
 ### A note on my preferences
 
@@ -251,6 +252,7 @@ A few places where this config differs from typical Arch / Hyprland setups:
 
 - **Light background.** The kitty theme uses a near-white background (`#f7f7f7`), suited to my 4K ROG panel. For a more conventional dark look, swap `config/kitty/current-theme.conf` for any theme under `/usr/share/kitty/themes/`.
 - **Consolas as system monospace.** My fontconfig pins `Consolas Nerd Font` as the default `monospace` family. Switch to JetBrains Mono, FiraCode, or MesloLGS by editing `config/fontconfig/fonts.conf`.
+- **VS Code terminal copy/paste.** My `keybindings.json` rebinds `Ctrl+C` so it copies when there is a selection and sends `SIGINT` (the usual terminal interrupt) when there isn't, and `Ctrl+V` always pastes. This matches the rest of the desktop — selection-aware copy on `Ctrl+C` — at the cost of losing the default "send `Ctrl+C` literally" behavior on an empty selection.
 - **Super+letter app launchers.** Hyprland is rebound so the most common apps open with a single Super-key chord:
 
   | Binding | Action |
@@ -265,6 +267,12 @@ A few places where this config differs from typical Arch / Hyprland setups:
   | `Super+V` | Toggle floating |
   | `Super+M` | Exit Hyprland |
   | `Super+1` … `Super+0` | Workspace 1 … 10 |
+  | `Super+Left` / `Super+Right` | Lower / raise system volume (5% step) |
+
+- **Brightness control is opt-in.** The `Super+Up` / `Super+Down` brightness bindings are shipped commented out in `config/hypr/hyprland.conf` because the right command depends on the hardware:
+  - **Laptops** (built-in panel): `sudo pacman -S brightnessctl`, then uncomment the `brightnessctl` lines.
+  - **Desktops with external monitors** (DDC/CI): `sudo pacman -S ddcutil`, then uncomment the `ddcutil` lines. The `--bus N` argument is monitor-specific — run `ddcutil detect` to find the right bus number (or paste its output to an AI and let it pick). Both paths are tested on my desktop and laptop respectively.
+  - **NVIDIA GPU output**: skip the keybindings entirely and install `nvidia-settings` — adjusting brightness/gamma in its GUI is the most convenient route when the display is driven by the NVIDIA driver.
 
 ### What it ends up looking like
 
