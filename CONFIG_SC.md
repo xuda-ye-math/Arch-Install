@@ -245,6 +245,29 @@ fc-cache -fv
 
 这一条会把 `~/.config/hypr/`、`~/.config/kitty/`、`~/.config/micro/` 一次性填好，并将 Nerd Font 注册到 fontconfig。如果上述目录里已经存有你自己的配置，请先备份(例如 `mv ~/.config/hypr ~/.config/hypr.bak`)—— `cp -r` 会覆盖单个文件，但不会做智能合并。
 
+### 安装 `open` 辅助脚本
+
+`config/local-bin/open` 是我放在 `PATH` 上的一个小 bash 分发脚本，这样在任何 shell 中输入 `open <文件>`(或 `open <URL>`)都会自动启动合适的应用 —— URL 用 Chrome、目录用 Dolphin、图片用 gwenview、音视频用 mpv、PDF 用 okular、Office 与压缩包交给 `xdg-open`，其余一律在当前终端里用 `micro` 打开。用起来类似于 macOS 的 `open` 命令。
+
+```bash
+mkdir -p ~/.local/bin
+# 提示: 如果 ~/.local/bin/open 已经存在，这条命令会直接覆盖它。
+cp config/local-bin/open ~/.local/bin
+chmod +x ~/.local/bin/open
+
+# 确保 ~/.local/bin 在 $PATH 中。把下面这一行追加到 ~/.zshrc(或 ~/.bashrc)：
+#   export PATH="$HOME/.local/bin:$PATH"
+# 之后重新打开 shell 或运行 `source ~/.zshrc` 使更改生效。
+```
+
+脚本默认依赖 `gwenview`、`mpv`、`okular`、`micro`、`dolphin` 与 `google-chrome-stable`，如果你偏好其他程序，修改文件开头的 `case` 分支即可。
+
+> 附注: `~/.local/bin` 也是 Claude Code 安装器的默认目录 —— 如果你从终端安装了 Claude Code，`claude` 可执行文件也会落在这里。所以把这个目录加入 `$PATH` 一次，就同时让本 `open` 脚本以及今后任何安装到这里的用户级 CLI 工具都能直接使用。
+
+### 启用 G6 Sound Blaster 外置声卡(DAC)
+
+大多数 Linux 发行版对外置 USB DAC 的开箱即用支持都比较粗糙 —— 播放一般还能凑合，但麦克风输入经常出问题(采样率不对、没有输入电平、`pavucontrol` 里能看到设备却没有声音输入等)。如果你和我一样在用 [Creative Sound BlasterX G6](https://us.creative.com/p/refurbished/sound-blasterx-g6-b-stock)，可以参考 [`SOUND-BLASTERX-G6.md`](SOUND-BLASTERX-G6.md)，里面记录了我在 Arch + PipeWire 下让耳机输出和麦克风同时稳定工作的步骤。_(目前那个文件还是空的 —— 等我把笔记整理好后再补上。)_
+
 ### 关于个人偏好的几点说明
 
 这份配置在以下几处和典型的 Arch / Hyprland 配置有所不同:

@@ -246,6 +246,29 @@ fc-cache -fv
 
 This populates `~/.config/hypr/`, `~/.config/kitty/`, and `~/.config/micro/` in one shot, drops my VS Code `settings.json` and `keybindings.json` into `~/.config/Code/User/`, plus registers the Nerd Font with fontconfig. If any of those directories already exist with your own settings, back them up first (e.g. `mv ~/.config/hypr ~/.config/hypr.bak`) — `cp -r` overwrites individual files but does not merge them intelligently.
 
+### Install the `open` helper script
+
+`config/local-bin/open` is a small bash dispatcher I keep on `PATH` so that typing `open <file>` (or `open <url>`) in any shell launches the right app — Chrome for URLs, Dolphin for directories, gwenview for images, mpv for audio/video, okular for PDFs, `xdg-open` for office/archive files, and `micro` (in the current terminal) for everything else. It mirrors the convenience of macOS's `open` command.
+
+```bash
+mkdir -p ~/.local/bin
+# Heads up: if ~/.local/bin/open already exists, this will overwrite it.
+cp config/local-bin/open ~/.local/bin
+chmod +x ~/.local/bin/open
+
+# Make sure ~/.local/bin is on $PATH. Append this to ~/.zshrc (or ~/.bashrc):
+#   export PATH="$HOME/.local/bin:$PATH"
+# Then reopen the shell or `source ~/.zshrc` to pick up the change.
+```
+
+The script assumes `gwenview`, `mpv`, `okular`, `micro`, `dolphin`, and `google-chrome-stable` are installed — adjust the `case` block at the top of the file if you prefer different defaults.
+
+> Side note: `~/.local/bin` is also where Claude Code's own installer drops the `claude` binary when you install it from the terminal, so adding the directory to `$PATH` once benefits both this `open` script and any future per-user CLI tools you install there.
+
+### Enable your G6 Sound Blaster (external DAC)
+
+Most Linux distributions ship with rough out-of-the-box support for external USB DACs — playback usually works, but the microphone input is what tends to misbehave (wrong sample rate, no input level, the device appearing in `pavucontrol` but producing silence, etc.). If you happen to be using the [Creative Sound BlasterX G6](https://us.creative.com/p/refurbished/sound-blasterx-g6-b-stock) like I am, see [`SOUND-BLASTERX-G6.md`](SOUND-BLASTERX-G6.md) for the steps that finally got both the headphone output and the microphone working reliably on Arch + PipeWire. _(That file is currently empty — I'll fill it in once I've cleaned up my notes.)_
+
 ### A note on my preferences
 
 A few places where this config differs from typical Arch / Hyprland setups:

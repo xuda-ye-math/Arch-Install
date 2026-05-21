@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# Dispatch files to the right app based on extension.
+# Usage: open <file> [more files...]
+
+set -u
+
+open_one() {
+    local f=$1
+
+    # URLs → Google Chrome
+    if [[ $f =~ ^(https?|ftp|file|mailto): ]]; then
+        google-chrome-stable "$f" >/dev/null 2>&1 &
+        return
+    fi
+
+    if [[ ! -e $f ]]; then
+        printf 'open: %s: no such file\n' "$f" >&2
+        return 1
+    fi
+
+    # Directory → Dolphin
+    if [[ -d $f ]]; then
+        dolphin "$f" >/dev/null 2>&1 &
+        return
+    fi
+
+    local ext=${f##*.}
+    ext=${ext,,}  # lowercase
+
+    case $ext in
+        # Images
+        png|jpg|jpeg|gif|bmp|webp|tiff|tif|svg|ico|heic)
+            gwenview "$f" >/dev/null 2>&1 & ;;
+
+        # Video
+        mp4|mkv|webm|mov|avi|mpg|mpeg|flv|wmv|m4v|ts)
+            mpv "$f" >/dev/null 2>&1 & ;;
+
+        # Audio (mpv handles these well too)
+        mp3|flac|wav|ogg|opus|m4a|aac)
+            mpv "$f" >/dev/null 2>&1 & ;;
+
+        # PDF
+        pdf)
+            okular "$f" >/dev/null 2>&1 & ;;
+
+        # Office docs
+        doc|docx|odt|xls|xlsx|ods|ppt|pptx|odp)
+            xdg-open "$f" >/dev/null 2>&1 & ;;
+
+        # Archives — let xdg-open pick (ark, file-roller, etc.)
+        zip|tar|gz|bz2|xz|7z|rar)
+            xdg-open "$f" >/dev/null 2>&1 & ;;
+
+        # Everything else → treat as text/code, open in micro in the current terminal
+        *)
+            micro "$f" ;;
+    esac
+}
+
+if (( $# == 0 )); then
+    echo "usage: open <file|url> [...]" >&2
+    exit 1
+fi
+
+for arg in "$@"; do
+    open_one "$arg"
+done
