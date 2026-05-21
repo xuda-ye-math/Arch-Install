@@ -20,6 +20,7 @@ A personal, beginner-friendly walkthrough for installing Arch Linux on a single 
 | [CONFIG.md](CONFIG.md) | Post-install configuration — zsh + Oh My Zsh, Hyprland (+ kitty, dolphin, waybar, dunst, …), PipeWire audio, fonts, fcitx5 Chinese input, NVIDIA drivers, AUR helper. |
 | [config/](config/) | My personal dotfiles for Hyprland, kitty, micro, and fontconfig — drop them into `~/.config/`. |
 | [fonts/](fonts/) | The patched **Consolas Nerd Font** (Regular + Italic) referenced by the kitty config. |
+| [SOUND-BLASTERX-G6.md](SOUND-BLASTERX-G6.md) | Hardware-specific notes for getting the **Creative Sound BlasterX G6** USB DAC (output *and* microphone) working reliably on Arch + PipeWire, including a small `alsainit` helper script. |
 | [INSTALL_SC.md](INSTALL_SC.md) / [CONFIG_SC.md](CONFIG_SC.md) | Simplified Chinese translations (machine-generated; English versions are canonical). |
 
 ### Quick start
