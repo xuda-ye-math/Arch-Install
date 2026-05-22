@@ -247,6 +247,62 @@ fc-cache -fv
 
 This populates `~/.config/hypr/`, `~/.config/kitty/`, and `~/.config/micro/` in one shot, drops my VS Code `settings.json` and `keybindings.json` into `~/.config/Code/User/`, plus registers the Nerd Font with fontconfig. If any of those directories already exist with your own settings, back them up first (e.g. `mv ~/.config/hypr ~/.config/hypr.bak`) — `cp -r` overwrites individual files but does not merge them intelligently.
 
+### Configure your monitor
+
+Hyprland does not pick up your monitor's resolution, refresh rate, or scale factor automatically — you have to tell it. The repo's [config/hypr/hyprland.conf](config/hypr/hyprland.conf) ships with the relevant line commented out near the top, because the output name and supported modes are machine-specific.
+
+First, list the connected outputs and the modes they advertise:
+
+```bash
+hyprctl monitors
+```
+
+Look for the `Monitor <NAME>` header (e.g. `HDMI-A-1`, `DP-1`, `eDP-1`) and the `availableModes` line just below. Pick the resolution and refresh rate you want, then uncomment and edit the `monitor =` line in `~/.config/hypr/hyprland.conf`. The syntax is `NAME, RESOLUTION@REFRESH, POSITION, SCALE`:
+
+```bash
+monitor = HDMI-A-1, 3840x2160@120, 0x0, 2
+```
+
+- **`HDMI-A-1`** — replace with the output name from `hyprctl monitors`.
+- **`3840x2160@120`** — resolution and refresh rate. Must be one of the modes listed in `availableModes`.
+- **`0x0`** — top-left position in the global layout (only matters with multiple monitors).
+- **`2`** — scale factor. On 4K displays I use `2`; on 1440p displays `1.25`–`1.5` is more typical; on 1080p screens stick to `1`. Hyprland prefers integer or simple fractional scales — exotic values like `1.33` can cause blurry XWayland rendering.
+
+Save the file and Hyprland will hot-reload the new monitor settings. If you mistype the output name the screen goes black — first try `Super+M` to close the Hyprland session and drop back to the TTY, where you can fix the line and run `start-hyprland` again. If that keybind no longer responds, switch to a fresh TTY with `Ctrl+Alt+F2`, fix the line there, and switch back with `Ctrl+Alt+F1`.
+
+### Wayland and XWayland consistency
+
+Hyprland is a Wayland-native compositor, but a fair number of apps I rely on (most notably WeChat) still ship only X11 builds and run under XWayland. Without a bit of glue, those apps tend to misbehave — wrong window scaling, mismatched cursor sizes, blurry fonts. The snippets below are already baked into [config/hypr/hyprland.conf](config/hypr/hyprland.conf), so you shouldn't need any per-app workarounds. Everything here was tuned on a 4K display at 2× scaling; adjust the numbers to fit your own setup.
+
+Route every toolkit's input method through fcitx5 so Chinese input works in GTK, Qt, and X11 apps alike:
+
+```bash
+env = GTK_IM_MODULE,fcitx
+env = QT_IM_MODULE,fcitx
+env = XMODIFIERS,@im=fcitx
+```
+
+Pin a single cursor size across both display servers, and push Electron apps onto native Wayland. `XCURSOR_SIZE` controls XWayland clients while `HYPRCURSOR_SIZE` controls native Wayland ones — keeping them in lockstep prevents the cursor from visibly resizing as you cross between an X11 and a Wayland window. The `ELECTRON_OZONE_PLATFORM_HINT` setting nudges Electron apps like LinuxQQ and Discord to render via Wayland directly instead of going through XWayland, which fixes their HiDPI rendering:
+
+```bash
+env = XCURSOR_SIZE,24
+env = HYPRCURSOR_SIZE,24
+env = ELECTRON_OZONE_PLATFORM_HINT,wayland
+```
+
+Bump the DPI hint for legacy X11 apps and disable XWayland's own scaling pass. Writing `Xft.dpi` into `~/.Xresources` and merging it via `xrdb` is what makes apps like WeChat legible on HiDPI screens; `force_zero_scaling` then tells Hyprland not to scale those XWayland surfaces a second time on top of what the app already did:
+
+```bash
+exec-once = echo "Xft.dpi: 200" > ~/.Xresources
+exec-once = xrdb -merge ~/.Xresources
+
+xwayland {
+    force_zero_scaling = true
+}
+```
+
+> **Heads up:** the `echo ... > ~/.Xresources` line **overwrites** `~/.Xresources` on every login. If you already maintain that file for other purposes (custom keysyms, terminal colors, etc.), comment this line out and add `Xft.dpi: 200` to your existing file by hand.
+
 ### Install the `open` helper script
 
 `config/local-bin/open` is a small bash dispatcher I keep on `PATH` so that typing `open <file>` (or `open <url>`) in any shell launches the right app — Chrome for URLs, Dolphin for directories, gwenview for images, mpv for audio/video, okular for PDFs, `xdg-open` for office/archive files, and `micro` (in the current terminal) for everything else. It mirrors the convenience of macOS's `open` command.
