@@ -198,11 +198,17 @@ sudo pacman -S texlive-basic texlive-bin texlive-binextra texlive-latex \
 yay -S google-chrome
 yay -S visual-studio-code-bin
 yay -S github-cli
+yay -S yazi
 ```
 
 - **`google-chrome`** —— 谷歌官方的 Chrome 浏览器(开源上游是 `chromium`，也在主仓库中提供)。
 - **`visual-studio-code-bin`** —— 微软官方的 VS Code 二进制版(`-bin` 后缀表示这是一个预编译包；也可以通过 `code` 包从源码编译，但耗时长得多)。
 - **`github-cli`** —— GitHub 官方命令行工具(`gh`)。在克隆仓库、提交 pull request 以及在 `git push`/`pull` 中无需折腾 Personal Access Token 等场景下都非常方便。安装后运行一次 `gh auth login` 把 CLI 关联到你的 GitHub 账号。
+- **`yazi`** —— 一个用 Rust 写的、速度很快的终端文件管理器，支持图像/媒体的内嵌预览，尤其适合 SSH 远程使用。它的图标依赖 Nerd Font 字形，因此需要安装一款 Nerd Font(例如本仓库[附带的 **Consolas Nerd Font**](fonts/))。[官方网站](https://yazi-rs.github.io/)。
+
+<p align="center">
+  <img src="yazi.png" alt="yazi 浏览目录并显示内嵌图像预览" width="900">
+</p>
 
 如果有其他你反复安装的软件，也可以加在这里 —— `yay -Ss <关键词>` 是一次性搜索官方仓库和 AUR 的便捷方式。
 

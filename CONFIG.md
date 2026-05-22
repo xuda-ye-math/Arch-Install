@@ -198,11 +198,17 @@ A short list of applications I always install. Some live in the AUR (installed v
 yay -S google-chrome
 yay -S visual-studio-code-bin
 yay -S github-cli
+yay -S yazi
 ```
 
 - **`google-chrome`** — Google's official Chrome browser (the open-source upstream is `chromium`, also in the main repos).
 - **`visual-studio-code-bin`** — Microsoft's official VS Code binary (the `-bin` suffix indicates a prebuilt package; building from source is also possible via the `code` package but takes much longer).
 - **`github-cli`** — GitHub's official command-line tool (`gh`). Great for cloning repos, opening pull requests, and authenticating `git push`/`pull` without juggling personal access tokens. Run `gh auth login` once after installation to link the CLI to your GitHub account.
+- **`yazi`** — A fast Rust terminal file manager with inline image previews, especially handy over SSH connections. Its icons are Nerd Font glyphs, so a Nerd Font (e.g. the **Consolas Nerd Font** [shipped here](fonts/)) must be installed. [Official site](https://yazi-rs.github.io/).
+
+<p align="center">
+  <img src="yazi.png" alt="yazi browsing a directory with an inline image preview" width="900">
+</p>
 
 Add anything else here that you find yourself installing repeatedly — `yay -Ss <keyword>` is a quick way to search both the official repos and the AUR at once.
 

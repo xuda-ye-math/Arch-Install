@@ -17,7 +17,7 @@ A personal, beginner-friendly walkthrough for installing Arch Linux on a single 
 | Path | Purpose |
 |---|---|
 | [INSTALL.md](INSTALL.md) | Step-by-step base installation guide — booting from USB, partitioning with `gdisk`, formatting with `mkfs`, `pacstrap`, `arch-chroot`, GRUB, user setup. |
-| [CONFIG.md](CONFIG.md) | Post-install configuration — zsh + Oh My Zsh, Hyprland (+ kitty, dolphin, waybar, dunst, …), PipeWire audio, fonts, fcitx5 Chinese input, NVIDIA drivers, AUR helper. |
+| [CONFIG.md](CONFIG.md) | Post-install configuration — zsh + Oh My Zsh, Hyprland (+ kitty, dolphin, waybar, dunst, …), PipeWire audio, fonts, fcitx5 Chinese input, NVIDIA drivers, AUR helper, VS Code dotfiles. |
 | [config/](config/) | My personal dotfiles for Hyprland, kitty, micro, and fontconfig — drop them into `~/.config/`. |
 | [fonts/](fonts/) | The patched **Consolas Nerd Font** (Regular + Italic) referenced by the kitty config. |
 | [SOUND-BLASTERX-G6.md](SOUND-BLASTERX-G6.md) | Hardware-specific notes for getting the **Creative Sound BlasterX G6** USB DAC (output *and* microphone) working reliably on Arch + PipeWire, including a small `alsainit` helper script. |
@@ -54,7 +54,7 @@ Then read `INSTALL.md` end-to-end for the base install, followed by `CONFIG.md` 
 | 路径 | 作用 |
 |---|---|
 | [INSTALL.md](INSTALL.md) | 一步步的基础安装指南——从 U 盘启动、用 `gdisk` 分区、用 `mkfs` 格式化、`pacstrap`、`arch-chroot`、GRUB，直到用户配置。 |
-| [CONFIG.md](CONFIG.md) | 安装后的配置——zsh + Oh My Zsh、Hyprland(及 kitty、dolphin、waybar、dunst 等)、PipeWire 音频、字体、fcitx5 中文输入法、NVIDIA 显卡驱动、AUR 助手。 |
+| [CONFIG.md](CONFIG.md) | 安装后的配置——zsh + Oh My Zsh、Hyprland(及 kitty、dolphin、waybar、dunst 等)、PipeWire 音频、字体、fcitx5 中文输入法、NVIDIA 显卡驱动、AUR 助手、VS Code 配置。 |
 | [config/](config/) | 我个人的 dotfiles，包含 Hyprland、kitty、micro 以及 fontconfig 的配置——直接复制到 `~/.config/` 即可。 |
 | [fonts/](fonts/) | kitty 配置所引用的、打过补丁的 **Consolas Nerd Font**(Regular + Italic)。 |
 | [SOUND-BLASTERX-G6.md](SOUND-BLASTERX-G6.md) | 让 **Creative Sound BlasterX G6** USB DAC(包括耳机输出*与*麦克风)在 Arch + PipeWire 下稳定工作的硬件相关笔记，附带一个小的 `alsainit` 辅助脚本(仅有英文版)。 |
