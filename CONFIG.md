@@ -68,6 +68,21 @@ Once installed and configured, start the compositor from the TTY (text-mode logi
 start-hyprland
 ```
 
+Hyprland, like any desktop environment, renders your screen on the GPU — but its minimalism makes it dramatically lighter than the alternatives. On my 4K @ 120 Hz panel its resident VRAM footprint sits around 0.5 GB, which leaves plenty of headroom for heavy GPU workloads like deep-learning training. And on the rare occasion you want a *pure* compute environment, you can simply exit Hyprland back to the TTY with `Super+M`. By comparison, dropping out of GNOME or KDE Plasma to free the GPU normally means something like:
+
+```bash
+sudo systemctl isolate multi-user.target  # generic
+sudo systemctl stop sddm                  # KDE-specific
+```
+
+— commands that need root, are easy to get wrong, and have a knack for occasionally locking up the machine.
+
+If you also want the discrete GPU fully untouched by the desktop — `nvidia-smi` reading 0 % even while Hyprland is running — and your CPU has integrated graphics with a display output, there's a simpler trick than fiddling with Wayland's render-device settings or installing extra software:
+
+- **Plug your HDMI/DP cable into the motherboard's video output rather than the graphics card.** The desktop is then composited by the iGPU, leaving the full VRAM and all of the dGPU's compute cores available for headless workloads like deep-learning training. Swap the cable back into the graphics card when you need the dGPU to drive the monitor directly — for example when doing real 3D-object rendering in games or Blender's interactive viewport.
+
+On laptops none of this applies: hybrid-graphics models already wire the internal display to the iGPU by default.
+
 ### Audio and video playback
 
 Modern Arch uses [PipeWire](https://wiki.archlinux.org/title/PipeWire) as the unified audio/video server, with WirePlumber as its session manager. This combination replaces the older PulseAudio + JACK stack and works out of the box for both desktop apps and pro-audio workflows.

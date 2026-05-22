@@ -68,6 +68,21 @@ sudo pacman -S kitty dolphin dunst waybar qt5-wayland qt6-wayland \
 start-hyprland
 ```
 
+Hyprland 和其他桌面环境一样，依赖 GPU 来渲染画面 —— 但凭借它的极简设计，比其他方案要轻得多。在我的 4K @ 120 Hz 屏幕上，Hyprland 常驻的显存占用只有约 0.5 GB，给深度学习训练这类重型 GPU 工作负载留出了非常充裕的余量。如果偶尔需要一个*纯*计算环境，只要按 `Super+M` 就能干净地退出 Hyprland 回到 TTY。相比之下，要让 GNOME 或 KDE Plasma 把 GPU 释放出来，通常得运行类似这样的命令:
+
+```bash
+sudo systemctl isolate multi-user.target  # 通用做法
+sudo systemctl stop sddm                  # 针对 KDE
+```
+
+—— 这些命令需要 root 权限，容易出错，而且偶尔会把机器卡死。
+
+如果还想让独立显卡完全不被桌面占用 —— 即便 Hyprland 正在运行，`nvidia-smi` 也读到 0%，而且你的 CPU 自带集成显卡且主板有视频输出口，有一个比修改 Wayland 渲染设备设置或安装额外软件都更省事的小窍门:
+
+- **把 HDMI/DP 线插到主板的视频输出口上，而不是显卡上。** 桌面就会由 iGPU 合成，dGPU 的整块显存和全部计算核心都空出来给深度学习训练这类无显示需求的工作负载使用。如果需要让 dGPU 直接驱动显示器(例如玩游戏，或者用 Blender 实时视口做真正的 3D 物体渲染时)，把线再插回显卡上即可。
+
+笔记本上不必做这些:混合显卡机型默认就已经把内屏接到 iGPU 上了。
+
 ### 音视频播放
 
 现代的 Arch 使用 [PipeWire](https://wiki.archlinux.org/title/PipeWire) 作为统一的音视频服务器，以 WirePlumber 作为它的会话管理器。这一组合替代了较旧的 PulseAudio + JACK 体系，无论是桌面应用还是专业音频工作流，都是开箱即用。
