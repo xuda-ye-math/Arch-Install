@@ -86,14 +86,14 @@ sudo pacman -S usbutils pipewire pipewire-alsa pipewire-pulse \
 
 安装完成后，用户级的 PipeWire 服务应在下次登录时自动启动。可以用 `mpv <某个文件>` 或 `speaker-test -c 2` 测试播放是否正常。
 
-### 命令行工具
+### 系统级实用工具
 
 下面是我日常常用的一组小工具:
 
 ```bash
 sudo pacman -S curl cmake os-prober trash-cli zip unzip \
                man-db imagemagick grim slurp rsync okular \
-               gwenview fastfetch btop
+               gwenview fastfetch btop xorg-xrdb
 ```
 
 - **`curl`**、**`cmake`** —— 基础开发工具(`git` 已经在 Oh My Zsh 那一节随之安装)。
@@ -108,6 +108,7 @@ sudo pacman -S curl cmake os-prober trash-cli zip unzip \
 - **`gwenview`** —— KDE 的图像查看器。
 - **`fastfetch`** —— 最受欢迎的系统和硬件信息显示工具。只要运行 `fastfetch`，就能打印出格式漂亮的发行版、内核、CPU、GPU、内存等信息摘要(`neofetch` 的现代继任者)。
 - **`btop`** —— 终端中方便的系统监视器。以可用鼠标点击、色彩分明的面板实时显示 CPU/内存/磁盘/网络使用情况——`top`/`htop` 的现代替代品。
+- **`xorg-xrdb`** —— X 资源数据库工具。在 XWayland 下运行老旧 X11 应用时，可用它通过 `~/.Xresources` 管理字体、颜色、DPI 等设置。
 
 ### NVIDIA 显卡驱动
 

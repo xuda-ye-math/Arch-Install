@@ -86,14 +86,14 @@ sudo pacman -S usbutils pipewire pipewire-alsa pipewire-pulse \
 
 After installation, the user-level PipeWire services should auto-start on next login. Test playback with `mpv <some-file>` or `speaker-test -c 2`.
 
-### Command-line utilities
+### System-level utilities
 
 A grab-bag of small tools I find myself reaching for constantly:
 
 ```bash
 sudo pacman -S curl cmake os-prober trash-cli zip unzip \
                man-db imagemagick grim slurp rsync okular \
-               gwenview fastfetch btop
+               gwenview fastfetch btop xorg-xrdb
 ```
 
 - **`curl`**, **`cmake`** — fundamental dev tooling (`git` was already installed earlier alongside Oh My Zsh).
@@ -108,6 +108,7 @@ sudo pacman -S curl cmake os-prober trash-cli zip unzip \
 - **`gwenview`** — KDE's image viewer.
 - **`fastfetch`** — the most-liked system and hardware display tool. Print a nicely formatted summary of your distro, kernel, CPU, GPU, memory, etc. by simply running `fastfetch` (the modern successor to `neofetch`).
 - **`btop`** — convenient system monitor in the terminal. Shows live CPU/memory/disk/network usage with mouse-clickable, color-coded panels — a modern replacement for `top`/`htop`.
+- **`xorg-xrdb`** — the X resources database utility. Useful for managing legacy X11 apps (e.g. setting fonts, colors, and DPI via `~/.Xresources`) when running them under XWayland.
 
 ### NVIDIA drivers
 
