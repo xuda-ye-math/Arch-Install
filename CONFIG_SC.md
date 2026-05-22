@@ -246,6 +246,62 @@ fc-cache -fv
 
 这一条会把 `~/.config/hypr/`、`~/.config/kitty/`、`~/.config/micro/` 一次性填好，并将 Nerd Font 注册到 fontconfig。如果上述目录里已经存有你自己的配置，请先备份(例如 `mv ~/.config/hypr ~/.config/hypr.bak`)—— `cp -r` 会覆盖单个文件，但不会做智能合并。
 
+### 配置你的显示器
+
+Hyprland 不会自动识别显示器的分辨率、刷新率或缩放比例 —— 这些都需要你显式告诉它。本仓库的 [config/hypr/hyprland.conf](config/hypr/hyprland.conf) 在文件开头预留了相关行，但已注释掉，因为输出名称与支持的模式都和具体机器相关。
+
+先列出已连接的输出以及它们公布的可用模式:
+
+```bash
+hyprctl monitors
+```
+
+留意 `Monitor <名称>` 那一行的输出名(例如 `HDMI-A-1`、`DP-1`、`eDP-1`)，以及下方的 `availableModes`。挑好你想要的分辨率和刷新率，然后在 `~/.config/hypr/hyprland.conf` 中取消注释并编辑 `monitor =` 那一行。语法是 `名称, 分辨率@刷新率, 位置, 缩放`:
+
+```bash
+monitor = HDMI-A-1, 3840x2160@120, 0x0, 2
+```
+
+- **`HDMI-A-1`** —— 替换为 `hyprctl monitors` 显示的输出名。
+- **`3840x2160@120`** —— 分辨率与刷新率，必须是 `availableModes` 中列出的某一项。
+- **`0x0`** —— 显示器在全局布局中的左上角位置(只有多显示器时才有意义)。
+- **`2`** —— 缩放比例。4K 屏我用 `2`；1440p 屏更常见的是 `1.25`–`1.5`；1080p 屏建议保持 `1`。Hyprland 偏好整数或简单的分数缩放 —— 像 `1.33` 这样的奇怪值会让 XWayland 渲染发糊。
+
+保存文件后 Hyprland 会自动热加载新的显示器设置。如果你把输出名拼错了，屏幕会变黑 —— 先尝试按 `Super+M` 关闭 Hyprland 会话回到 TTY，在那里修好这一行后再运行 `start-hyprland`。如果这个快捷键也不响应，用 `Ctrl+Alt+F2` 切到一个新的 TTY，在那里修好后再用 `Ctrl+Alt+F1` 切回去。
+
+### Wayland 与 XWayland 兼容性
+
+Hyprland 是原生 Wayland 合成器，但我日常依赖的不少应用(尤其是微信)目前仍只发布 X11 版本，需要经 XWayland 运行。如果不做一些额外衔接，这些应用很容易表现异常 —— 窗口缩放错误、鼠标指针大小不一致、字体发糊。下面这些片段已经写入了 [config/hypr/hyprland.conf](config/hypr/hyprland.conf)，所以一般不需要再为单个应用做特殊处理。所有数值都是在 4K 屏 2× 缩放下调好的，请按你自己的硬件调整。
+
+把所有工具包的输入法都路由到 fcitx5，这样 GTK、Qt 与 X11 应用都能正常使用中文输入:
+
+```bash
+env = GTK_IM_MODULE,fcitx
+env = QT_IM_MODULE,fcitx
+env = XMODIFIERS,@im=fcitx
+```
+
+把鼠标指针在两套显示协议下固定为同一大小，并把 Electron 应用拉到原生 Wayland。`XCURSOR_SIZE` 控制 XWayland 客户端，`HYPRCURSOR_SIZE` 控制原生 Wayland 客户端 —— 让两者保持一致可以避免鼠标在 X11 与 Wayland 窗口之间切换时大小发生跳变。`ELECTRON_OZONE_PLATFORM_HINT` 则会把 LinuxQQ、Discord 这类 Electron 应用从 XWayland 拉到原生 Wayland，缩放与 HiDPI 渲染都会正常很多:
+
+```bash
+env = XCURSOR_SIZE,24
+env = HYPRCURSOR_SIZE,24
+env = ELECTRON_OZONE_PLATFORM_HINT,wayland
+```
+
+为传统 X11 应用提高 DPI，并关掉 XWayland 自己的二次缩放。把 `Xft.dpi` 写入 `~/.Xresources` 再通过 `xrdb` 合并，是让微信等应用在 HiDPI 屏上能看清字的关键；`force_zero_scaling` 则告诉 Hyprland 不要在应用已经做过缩放的基础上再叠加一次缩放:
+
+```bash
+exec-once = echo "Xft.dpi: 200" > ~/.Xresources
+exec-once = xrdb -merge ~/.Xresources
+
+xwayland {
+    force_zero_scaling = true
+}
+```
+
+> **注意:** `echo ... > ~/.Xresources` 这一行会在每次登录时**覆盖** `~/.Xresources`。如果你已经在用这个文件做其他配置(自定义按键映射、终端颜色等)，请把它注释掉，并在已有的 `~/.Xresources` 中手动追加 `Xft.dpi: 200`。
+
 ### 安装 `open` 辅助脚本
 
 `config/local-bin/open` 是我放在 `PATH` 上的一个小 bash 分发脚本，这样在任何 shell 中输入 `open <文件>`(或 `open <URL>`)都会自动启动合适的应用 —— URL 用 Chrome、目录用 Dolphin、图片用 gwenview、音视频用 mpv、PDF 用 okular、Office 与压缩包交给 `xdg-open`，其余一律在当前终端里用 `micro` 打开。用起来类似于 macOS 的 `open` 命令。
@@ -267,7 +323,7 @@ chmod +x ~/.local/bin/open
 
 ### 启用 G6 Sound Blaster 外置声卡(DAC)
 
-大多数 Linux 发行版对外置 USB DAC 的开箱即用支持都比较粗糙 —— 播放一般还能凑合，但麦克风输入经常出问题(采样率不对、没有输入电平、`pavucontrol` 里能看到设备却没有声音输入等)。如果你和我一样在用 [Creative Sound BlasterX G6](https://us.creative.com/p/refurbished/sound-blasterx-g6-b-stock)，可以参考 [`SOUND-BLASTERX-G6.md`](SOUND-BLASTERX-G6.md)，里面记录了我在 Arch + PipeWire 下让耳机输出和麦克风同时稳定工作的步骤。_(目前那个文件还是空的 —— 等我把笔记整理好后再补上。)_
+大多数 Linux 发行版对外置 USB DAC 的开箱即用支持都比较粗糙 —— 播放一般还能凑合，但麦克风输入经常出问题(采样率不对、没有输入电平、`pavucontrol` 里能看到设备却没有声音输入等)。如果你和我一样在用 [Creative Sound BlasterX G6](https://us.creative.com/p/refurbished/sound-blasterx-g6-b-stock)，可以参考 [`SOUND-BLASTERX-G6.md`](SOUND-BLASTERX-G6.md)(仅有英文版)，里面记录了我在 Arch + PipeWire 下让耳机输出和麦克风同时稳定工作的步骤。
 
 ### 关于个人偏好的几点说明
 

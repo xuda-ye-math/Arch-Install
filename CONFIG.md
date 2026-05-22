@@ -324,7 +324,7 @@ The script assumes `gwenview`, `mpv`, `okular`, `micro`, `dolphin`, and `google-
 
 ### Enable your G6 Sound Blaster (external DAC)
 
-Most Linux distributions ship with rough out-of-the-box support for external USB DACs — playback usually works, but the microphone input is what tends to misbehave (wrong sample rate, no input level, the device appearing in `pavucontrol` but producing silence, etc.). If you happen to be using the [Creative Sound BlasterX G6](https://us.creative.com/p/refurbished/sound-blasterx-g6-b-stock) like I am, see [`SOUND-BLASTERX-G6.md`](SOUND-BLASTERX-G6.md) for the steps that finally got both the headphone output and the microphone working reliably on Arch + PipeWire. _(That file is currently empty — I'll fill it in once I've cleaned up my notes.)_
+Most Linux distributions ship with rough out-of-the-box support for external USB DACs — playback usually works, but the microphone input is what tends to misbehave (wrong sample rate, no input level, the device appearing in `pavucontrol` but producing silence, etc.). If you happen to be using the [Creative Sound BlasterX G6](https://us.creative.com/p/refurbished/sound-blasterx-g6-b-stock) like I am, see [`SOUND-BLASTERX-G6.md`](SOUND-BLASTERX-G6.md) for the steps that finally got both the headphone output and the microphone working reliably on Arch + PipeWire.
 
 ### A note on my preferences
 

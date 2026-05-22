@@ -57,6 +57,7 @@ Then read `INSTALL.md` end-to-end for the base install, followed by `CONFIG.md` 
 | [CONFIG.md](CONFIG.md) | 安装后的配置——zsh + Oh My Zsh、Hyprland(及 kitty、dolphin、waybar、dunst 等)、PipeWire 音频、字体、fcitx5 中文输入法、NVIDIA 显卡驱动、AUR 助手。 |
 | [config/](config/) | 我个人的 dotfiles，包含 Hyprland、kitty、micro 以及 fontconfig 的配置——直接复制到 `~/.config/` 即可。 |
 | [fonts/](fonts/) | kitty 配置所引用的、打过补丁的 **Consolas Nerd Font**(Regular + Italic)。 |
+| [SOUND-BLASTERX-G6.md](SOUND-BLASTERX-G6.md) | 让 **Creative Sound BlasterX G6** USB DAC(包括耳机输出*与*麦克风)在 Arch + PipeWire 下稳定工作的硬件相关笔记，附带一个小的 `alsainit` 辅助脚本(仅有英文版)。 |
 | [INSTALL_SC.md](INSTALL_SC.md) / [CONFIG_SC.md](CONFIG_SC.md) | 简体中文译文(机器翻译；以英文版为准)。 |
 
 ### 快速开始
