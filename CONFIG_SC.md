@@ -239,18 +239,19 @@ sudo btrbk list snapshots
 
 要恢复单个文件,从 `/.snapshots/<时间戳>/` 把它复制出来即可;如果要回滚整个子卷,可以反过来用 `btrfs subvolume snapshot` 操作。如果将来想让它按计划运行,启用 btrbk 包里附带的 `btrbk.timer` 单元即可。
 
-### 复制我的 Hyprland、kitty 和 micro 配置
+### 复制我的 Hyprland、kitty、micro 和 VS Code 配置
 
 在克隆下来的本仓库根目录下，把我的 dotfiles 放入 `~/.config/`，同时安装 kitty 配置所需的 Consolas Nerd Font(字体那一段与上面[安装字体](#安装字体)一节中的命令重复 —— 重复执行也没有副作用):
 
 ```bash
-mkdir -p ~/.config ~/.local/share/fonts
+mkdir -p ~/.config ~/.config/Code/User ~/.local/share/fonts
 cp -r config/{hypr,kitty,micro} ~/.config/
+cp config/Code/{settings.json,keybindings.json} ~/.config/Code/User/
 cp fonts/ConsolasNerdFont_*.ttf ~/.local/share/fonts/
 fc-cache -fv
 ```
 
-这一条会把 `~/.config/hypr/`、`~/.config/kitty/`、`~/.config/micro/` 一次性填好，并将 Nerd Font 注册到 fontconfig。如果上述目录里已经存有你自己的配置，请先备份(例如 `mv ~/.config/hypr ~/.config/hypr.bak`)—— `cp -r` 会覆盖单个文件，但不会做智能合并。
+这一条会把 `~/.config/hypr/`、`~/.config/kitty/`、`~/.config/micro/` 一次性填好，并把我的 VS Code `settings.json` 与 `keybindings.json` 放入 `~/.config/Code/User/`，同时将 Nerd Font 注册到 fontconfig。如果上述目录里已经存有你自己的配置，请先备份(例如 `mv ~/.config/hypr ~/.config/hypr.bak`)—— `cp -r` 会覆盖单个文件，但不会做智能合并。
 
 ### 配置你的显示器
 
@@ -337,6 +338,7 @@ chmod +x ~/.local/bin/open
 
 - **浅色背景。** kitty 主题使用了接近白色的背景(`#f7f7f7`)，配合我的 4K ROG 屏幕。如果你想要更常见的深色风格，可以把 `config/kitty/current-theme.conf` 替换成 `/usr/share/kitty/themes/` 下的任何一个主题。
 - **Consolas 作为系统等宽字体。** 我的 fontconfig 把 `Consolas Nerd Font` 固定为默认 `monospace` 字体。如果想换成 JetBrains Mono、FiraCode 或 MesloLGS，只需修改 `config/fontconfig/fonts.conf`。
+- **VS Code 终端的复制/粘贴。** 我的 `keybindings.json` 重新映射了 `Ctrl+C`:有选中内容时执行复制，没有选中时发送 `SIGINT`(常规的终端中断信号)，而 `Ctrl+V` 始终是粘贴。这样的行为与桌面其他部分保持一致 —— `Ctrl+C` 在有选中时复制 —— 代价是失去了"在空选中时把 `Ctrl+C` 原样发送给终端"的默认行为。
 - **Super+字母 应用启动快捷键。** 我重新映射了 Hyprland 的快捷键，使最常用的应用都可以通过一组 Super 键 + 单字母快速打开:
 
   | 快捷键 | 动作 |
@@ -351,6 +353,7 @@ chmod +x ~/.local/bin/open
   | `Super+V` | 切换浮动模式 |
   | `Super+M` | 退出 Hyprland |
   | `Super+1` … `Super+0` | 切换到工作区 1 … 10 |
+  | `Super+Left` / `Super+Right` | 系统音量减小 / 增大(每次 5%) |
   | `Super+Z` | 用 slurp 框选区域截图 → `$HOME/YYMMDD_HH-MM-SS.png` |
   | `Super+X` | 全屏截图 → `$HOME/YYMMDD_HH-MM-SS.png` |
 
