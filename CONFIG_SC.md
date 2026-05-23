@@ -345,7 +345,23 @@ chmod +x ~/.local/bin/open
 
 ### 启用 G6 Sound Blaster 外置声卡（DAC）
 
-大多数 Linux 发行版对外置 USB DAC 的开箱即用支持都比较粗糙 —— 播放一般还能凑合，但麦克风输入经常出问题（采样率不对、没有输入电平、`pavucontrol` 里能看到设备却没有声音输入等）。如果你和我一样在用 [Creative Sound BlasterX G6](https://us.creative.com/p/refurbished/sound-blasterx-g6-b-stock)，可以参考 [`SOUND-BLASTERX-G6.md`](SOUND-BLASTERX-G6.md)（仅有英文版），里面记录了我在 Arch + PipeWire 下让耳机输出和麦克风同时稳定工作的步骤。
+大多数 Linux 发行版对外置 USB DAC 的开箱即用支持都比较粗糙 —— 播放一般还能凑合，但麦克风输入经常出问题（采样率不对、没有输入电平、`pavucontrol` 里能看到设备却没有声音输入等）。如果你和我一样在用 [Creative Sound BlasterX G6](https://us.creative.com/p/refurbished/sound-blasterx-g6-b-stock)，这份配置以前包含的 G6 专用设置已经独立成单独的项目 [`Sound-BlasterX-G6-Control`](https://github.com/xuda-ye-math/Sound-BlasterX-G6-Control)。Arch 上一行安装：
+
+```bash
+yay -S sound-blasterx-g6-control-git
+```
+
+具体的验证步骤、以及它注册到 systemd user unit 中、用于让 G6 在每次开机后都保持为默认输入/输出的机制，详见该项目的 README。
+
+### 用 OBS Studio 录制桌面 + 麦克风
+
+如果你要正经录制人声或屏幕 —— 不只是 G6 项目里用来验证录音是否工作的 `arecord` 一次性测试 —— 推荐安装 [OBS Studio](https://obsproject.com/):
+
+```bash
+sudo pacman -S obs-studio
+```
+
+在 Hyprland/Wayland 下录制整个桌面：在 OBS 的 `Sources` 面板里点 `+`，添加一个 **Screen Capture (PipeWire)** 源，弹出的 xdg-desktop-portal 对话框里选中你要录制的显示器即可。只要默认的 PipeWire 输入/输出设置正确（G6 用户由上面的项目自动处理；其他设备可以用 `pavucontrol` 手动指定），OBS 会自动同时录上麦克风和桌面内部的系统音频，无需额外设置。本文件夹里的 [`obs.mp4`](obs.mp4) 就是用这种方式录的一段示例（4K 屏幕捕获、麦克风 + 系统音频一起录制）。
 
 ### 关于个人偏好的几点说明
 

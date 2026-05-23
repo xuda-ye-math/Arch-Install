@@ -20,8 +20,9 @@ A personal, beginner-friendly walkthrough for installing Arch Linux on a single 
 | [CONFIG.md](CONFIG.md) | Post-install configuration — zsh + Oh My Zsh, Hyprland (+ kitty, dolphin, waybar, dunst, …), PipeWire audio, fonts, fcitx5 Chinese input, NVIDIA drivers, AUR helper, VS Code dotfiles. |
 | [config/](config/) | My personal dotfiles for Hyprland, kitty, micro, and fontconfig — drop them into `~/.config/`. |
 | [fonts/](fonts/) | The patched **Consolas Nerd Font** (Regular + Italic) referenced by the kitty config. |
-| [SOUND-BLASTERX-G6.md](SOUND-BLASTERX-G6.md) | Hardware-specific notes for getting the **Creative Sound BlasterX G6** USB DAC (output *and* microphone) working reliably on Arch + PipeWire, including a small `alsainit` helper script. |
 | [INSTALL_SC.md](INSTALL_SC.md) / [CONFIG_SC.md](CONFIG_SC.md) | Simplified Chinese translations (machine-generated; English versions are canonical). |
+
+> 🔈 **Using a Creative Sound BlasterX G6?** The G6-specific setup that used to live in this repo has moved to its own project, [`Sound-BlasterX-G6-Control`](https://github.com/xuda-ye-math/Sound-BlasterX-G6-Control). One-line install on Arch: `yay -S sound-blasterx-g6-control-git`.
 
 ### Quick start
 
@@ -57,8 +58,9 @@ Then read `INSTALL.md` end-to-end for the base install, followed by `CONFIG.md` 
 | [CONFIG.md](CONFIG.md) | 安装后的配置——zsh + Oh My Zsh、Hyprland(及 kitty、dolphin、waybar、dunst 等)、PipeWire 音频、字体、fcitx5 中文输入法、NVIDIA 显卡驱动、AUR 助手、VS Code 配置。 |
 | [config/](config/) | 我个人的 dotfiles，包含 Hyprland、kitty、micro 以及 fontconfig 的配置——直接复制到 `~/.config/` 即可。 |
 | [fonts/](fonts/) | kitty 配置所引用的、打过补丁的 **Consolas Nerd Font**(Regular + Italic)。 |
-| [SOUND-BLASTERX-G6.md](SOUND-BLASTERX-G6.md) | 让 **Creative Sound BlasterX G6** USB DAC(包括耳机输出*与*麦克风)在 Arch + PipeWire 下稳定工作的硬件相关笔记，附带一个小的 `alsainit` 辅助脚本(仅有英文版)。 |
 | [INSTALL_SC.md](INSTALL_SC.md) / [CONFIG_SC.md](CONFIG_SC.md) | 简体中文译文(机器翻译；以英文版为准)。 |
+
+> 🔈 **在用 Creative Sound BlasterX G6？** 这份配置以前包含的 G6 专用设置已经独立成单独的项目 [`Sound-BlasterX-G6-Control`](https://github.com/xuda-ye-math/Sound-BlasterX-G6-Control)。Arch 上一行安装：`yay -S sound-blasterx-g6-control-git`。
 
 ### 快速开始
 

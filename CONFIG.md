@@ -345,7 +345,23 @@ The script assumes `gwenview`, `mpv`, `okular`, `micro`, `dolphin`, and `google-
 
 ### Enable your G6 Sound Blaster (external DAC)
 
-Most Linux distributions ship with rough out-of-the-box support for external USB DACs — playback usually works, but the microphone input is what tends to misbehave (wrong sample rate, no input level, the device appearing in `pavucontrol` but producing silence, etc.). If you happen to be using the [Creative Sound BlasterX G6](https://us.creative.com/p/refurbished/sound-blasterx-g6-b-stock) like I am, see [`SOUND-BLASTERX-G6.md`](SOUND-BLASTERX-G6.md) for the steps that finally got both the headphone output and the microphone working reliably on Arch + PipeWire.
+Most Linux distributions ship with rough out-of-the-box support for external USB DACs — playback usually works, but the microphone input is what tends to misbehave (wrong sample rate, no input level, the device appearing in `pavucontrol` but producing silence, etc.). If you happen to be using the [Creative Sound BlasterX G6](https://us.creative.com/p/refurbished/sound-blasterx-g6-b-stock) like I am, the G6-specific setup that used to live in this repo has moved to a standalone project — [`Sound-BlasterX-G6-Control`](https://github.com/xuda-ye-math/Sound-BlasterX-G6-Control). One-line install on Arch:
+
+```bash
+yay -S sound-blasterx-g6-control-git
+```
+
+See the project's README for the verification steps and the systemd user unit it installs to keep the G6 promoted to the default sink/source across reboots.
+
+### Recording desktop + microphone with OBS Studio
+
+For real voice or screen recording — anything beyond the `arecord` smoke test that the G6 project uses to verify capture — install [OBS Studio](https://obsproject.com/):
+
+```bash
+sudo pacman -S obs-studio
+```
+
+To record the whole desktop on Hyprland/Wayland, add a **Screen Capture (PipeWire)** source in OBS (`Sources` panel → `+` → `Screen Capture (PipeWire)`) and pick the monitor when the xdg-desktop-portal dialog pops up. As long as your default PipeWire input/output is set correctly (which the G6 project handles automatically if you're on a G6, or which `pavucontrol` lets you set by hand otherwise), OBS will also pick up the microphone and the desktop's internal system audio without further setup. See [`obs.mp4`](obs.mp4) in this folder for an example clip captured this way (4K screen capture, microphone + internal system sound recorded together).
 
 ### A note on my preferences
 
