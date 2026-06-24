@@ -43,7 +43,7 @@ cd .. && rm -rf yay   # 构建目录已不再需要
 
 ```bash
 sudo pacman -S kitty dolphin dunst waybar qt5-wayland qt6-wayland \
-               hyprland hyprlauncher hyprpaper hyprpolkitagent \
+               hyprland hyprlauncher hyprshutdown hyprpaper hyprpolkitagent \
                xdg-desktop-portal-hyprland
 ```
 
@@ -55,12 +55,15 @@ sudo pacman -S kitty dolphin dunst waybar qt5-wayland qt6-wayland \
 - **`dunst`** —— 轻量级通知守护进程（兼容 Wayland）。
 - **`waybar`** —— 顶部/底部状态栏（时钟、工作区、系统托盘等）。
 - **`hyprlauncher`** —— Hyprland 的应用启动器。
+- **`hyprshutdown`** —— 一个干净退出 Hyprland 会话的应用。
 - **`hyprpaper`** —— 壁纸守护进程。
 - **`hyprpolkitagent`** —— polkit 认证代理（让 GUI 应用在需要 root 权限时弹出密码提示）。
 - **`xdg-desktop-portal-hyprland`** —— 在 Hyprland 上实现 XDG 桌面 portal（屏幕共享、flatpak 应用中的文件选择器等会用到）。
 - **`qt5-wayland`** / **`qt6-wayland`** —— Qt 平台插件，让 Qt 应用以原生 Wayland 方式渲染，而不是退回到 XWayland。
 
 我所用的配置文件都在本仓库的 [.config/hypr/](.config/hypr/) 和 [.config/kitty/](.config/kitty/) 下 —— 安装完成后把它们复制到 `~/.config/`。
+
+> **注意：** 经典的 `hyprland.conf`（hyprlang）格式现已弃用 —— 详见 [Hyprland 文档](https://wiki.hypr.land/Configuring/Start/)。今后推荐用 Lua 配置（`hyprland.lua`）来配置 Hyprland，因此本仓库改为提供 `config/hypr/hyprland.lua`。
 
 安装并配置好之后，从 TTY（文本模式登录）中通过下面命令启动合成器：
 
@@ -185,7 +188,7 @@ yay -S fcitx5-configtool
 
 你会经常用到两条辅助命令：
 
-- **`fcitx5-remote`** —— 激活（启动）Fcitx5 服务。如果你的会话还没有自动启动 Fcitx5，可以在登录后运行一次；我的 `hyprland.conf` 通过 `exec-once` 在桌面启动时一起调用它。
+- **`fcitx5-remote`** —— 激活（启动）Fcitx5 服务。如果你的会话还没有自动启动 Fcitx5，可以在登录后运行一次；我的 `hyprland.lua` 会在 Hyprland 启动时自动运行它，让它随桌面一起启动。
 - **`fcitx5-configtool`** —— 打开配置 GUI，在这里把**拼音**（或你偏好的任何引擎）加入到活动输入法列表，以及调整快捷键。
 
 中英文切换的默认快捷键是 **Ctrl+Space**。
@@ -270,7 +273,7 @@ fc-cache -fv
 
 ### 配置你的显示器
 
-Hyprland 不会自动识别显示器的分辨率、刷新率或缩放比例 —— 这些都需要你显式告诉它。本仓库的 [config/hypr/hyprland.conf](config/hypr/hyprland.conf) 在文件开头预留了相关行，但已注释掉，因为输出名称与支持的模式都和具体机器相关。
+Hyprland 不会自动识别显示器的分辨率、刷新率或缩放比例 —— 这些都需要你显式告诉它。本仓库的 [config/hypr/hyprland.lua](config/hypr/hyprland.lua) 在文件开头预留了相关行，但已注释掉，因为输出名称与支持的模式都和具体机器相关。
 
 先列出已连接的输出以及它们公布的可用模式：
 
@@ -278,10 +281,10 @@ Hyprland 不会自动识别显示器的分辨率、刷新率或缩放比例 —�
 hyprctl monitors
 ```
 
-留意 `Monitor <名称>` 那一行的输出名（例如 `HDMI-A-1`、`DP-1`、`eDP-1`），以及下方的 `availableModes`。挑好你想要的分辨率和刷新率，然后在 `~/.config/hypr/hyprland.conf` 中取消注释并编辑 `monitor =` 那一行。语法是 `名称, 分辨率@刷新率, 位置, 缩放`：
+留意 `Monitor <名称>` 那一行的输出名（例如 `HDMI-A-1`、`DP-1`、`eDP-1`），以及下方的 `availableModes`。挑好你想要的分辨率和刷新率，然后在 `~/.config/hypr/hyprland.lua` 中取消注释并编辑 `hl.monitor` 那一行。各字段为 `output`、`mode`（`分辨率@刷新率`）、`position` 和 `scale`：
 
-```bash
-monitor = HDMI-A-1, 3840x2160@120, 0x0, 2
+```lua
+hl.monitor({ output = "HDMI-A-1", mode = "3840x2160@120", position = "0x0", scale = 2 })
 ```
 
 - **`HDMI-A-1`** —— 替换为 `hyprctl monitors` 显示的输出名。
@@ -291,35 +294,49 @@ monitor = HDMI-A-1, 3840x2160@120, 0x0, 2
 
 保存文件后 Hyprland 会自动热加载新的显示器设置。如果你把输出名拼错了，屏幕会变黑 —— 先尝试按 `Super+M` 关闭 Hyprland 会话回到 TTY，在那里修好这一行后再运行 `start-hyprland`。如果这个快捷键也不响应，用 `Ctrl+Alt+F2` 切到一个新的 TTY，在那里修好后再用 `Ctrl+Alt+F1` 切回去。
 
+顺便在 [config/hypr/hyprpaper.conf](config/hypr/hyprpaper.conf) 里设置你的壁纸：
+
+```ini
+wallpaper {
+    monitor = 
+    path = /usr/share/hypr/wall2.png
+    fit_mode = cover
+}
+```
+
+`monitor =` 留空表示对所有显示器生效；否则指定一个输出名（例如 `HDMI-A-1`）。
+
 ### Wayland 与 XWayland 兼容性
 
-Hyprland 是原生 Wayland 合成器，但我日常依赖的不少应用（尤其是微信）目前仍只发布 X11 版本，需要经 XWayland 运行。如果不做一些额外衔接，这些应用很容易表现异常 —— 窗口缩放错误、鼠标指针大小不一致、字体发糊。下面这些片段已经写入了 [config/hypr/hyprland.conf](config/hypr/hyprland.conf)，所以一般不需要再为单个应用做特殊处理。所有数值都是在 4K 屏 2× 缩放下调好的，请按你自己的硬件调整。
+Hyprland 是原生 Wayland 合成器，但我日常依赖的不少应用（尤其是微信）目前仍只发布 X11 版本，需要经 XWayland 运行。如果不做一些额外衔接，这些应用很容易表现异常 —— 窗口缩放错误、鼠标指针大小不一致、字体发糊。下面这些片段已经写入了 [config/hypr/hyprland.lua](config/hypr/hyprland.lua)，所以一般不需要再为单个应用做特殊处理。所有数值都是在 4K 屏 2× 缩放下调好的，请按你自己的硬件调整。
 
 把所有工具包的输入法都路由到 fcitx5，这样 GTK、Qt 与 X11 应用都能正常使用中文输入：
 
-```bash
-env = GTK_IM_MODULE,fcitx
-env = QT_IM_MODULE,fcitx
-env = XMODIFIERS,@im=fcitx
+```lua
+hl.env("GTK_IM_MODULE", "fcitx")
+hl.env("QT_IM_MODULE", "fcitx")
+hl.env("XMODIFIERS", "@im=fcitx")
 ```
 
 把鼠标指针在两套显示协议下固定为同一大小，并把 Electron 应用拉到原生 Wayland。`XCURSOR_SIZE` 控制 XWayland 客户端，`HYPRCURSOR_SIZE` 控制原生 Wayland 客户端 —— 让两者保持一致可以避免鼠标在 X11 与 Wayland 窗口之间切换时大小发生跳变。`ELECTRON_OZONE_PLATFORM_HINT` 则会把 LinuxQQ、Discord 这类 Electron 应用从 XWayland 拉到原生 Wayland，缩放与 HiDPI 渲染都会正常很多：
 
-```bash
-env = XCURSOR_SIZE,24
-env = HYPRCURSOR_SIZE,24
-env = ELECTRON_OZONE_PLATFORM_HINT,wayland
+```lua
+hl.env("XCURSOR_SIZE", "24")
+hl.env("HYPRCURSOR_SIZE", "24")
+hl.env("ELECTRON_OZONE_PLATFORM_HINT", "wayland")
 ```
 
 为传统 X11 应用提高 DPI，并关掉 XWayland 自己的二次缩放。把 `Xft.dpi` 写入 `~/.Xresources` 再通过 `xrdb` 合并，是让微信等应用在 HiDPI 屏上能看清字的关键；`force_zero_scaling` 则告诉 Hyprland 不要在应用已经做过缩放的基础上再叠加一次缩放：
 
-```bash
-exec-once = echo "Xft.dpi: 200" > ~/.Xresources
-exec-once = xrdb -merge ~/.Xresources
+```lua
+hl.exec_cmd([[echo "Xft.dpi: 200" > ~/.Xresources]])
+hl.exec_cmd("xrdb -merge ~/.Xresources")
 
-xwayland {
-    force_zero_scaling = true
-}
+hl.config({
+    xwayland = {
+        force_zero_scaling = true,
+    },
+})
 ```
 
 > **注意：** `echo ... > ~/.Xresources` 这一行会在每次登录时**覆盖** `~/.Xresources`。如果你已经在用这个文件做其他配置（自定义按键映射、终端颜色等），请把它注释掉，并在已有的 `~/.Xresources` 中手动追加 `Xft.dpi: 200`。
@@ -389,11 +406,6 @@ sudo pacman -S obs-studio
   | `Super+X` | 全屏截图 → `$HOME/YYMMDD_HH-MM-SS.png` |
 
   截图快捷键依赖 `grim` 与 `slurp`（`sudo pacman -S grim slurp`）。通过快捷键触发时没有任何屏幕提示 —— 直接到 `$HOME` 查看新生成的文件，或者把同一条命令贴进终端运行以查看错误输出。
-
-- **亮度调节是可选项。** `Super+Up` / `Super+Down` 亮度快捷键在 `config/hypr/hyprland.conf` 中默认是被注释掉的，因为具体要用哪条命令取决于硬件：
-  - **笔记本**（内置面板）：`sudo pacman -S brightnessctl`，然后取消注释 `brightnessctl` 那两行。
-  - **带外接显示器的台式机**（DDC/CI）：`sudo pacman -S ddcutil`，然后取消注释 `ddcutil` 那两行。`--bus N` 参数与具体显示器相关 —— 运行 `ddcutil detect` 查看正确的总线号（或者把它的输出贴给 AI 让它帮你选）。这两种方案分别在我的台式机和笔记本上测试过。
-  - **NVIDIA GPU 输出**：直接跳过这套快捷键，安装 `nvidia-settings` —— 显示由 NVIDIA 驱动接管时，用它的 GUI 调节亮度/伽马最方便。
 
 ### 最终效果
 

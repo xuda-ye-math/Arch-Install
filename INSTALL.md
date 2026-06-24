@@ -417,7 +417,7 @@ shutdown now
 
 The `-R` flag unmounts recursively, so `/mnt/boot` is dismounted before `/mnt` itself. This guarantees that all pending writes are flushed to disk before power is cut. Note that the command is `umount` (no second `n`) — a very common first-time typo.
 
-Once the machine has powered off, unplug the USB drive. On the next boot, the UEFI firmware will find your newly installed Arch system and load GRUB from the ESP. Take a moment to relax — the heavy lifting is done. The next time you see a prompt, it will be the freshly installed Arch greeting you with a `login:` line, where you can sign in as the regular user you created earlier..
+Once the machine has powered off, unplug the USB drive. On the next boot, the UEFI firmware will find your newly installed Arch system and load GRUB from the ESP. Take a moment to relax — the heavy lifting is done. The next time you see a prompt, it will be the freshly installed Arch greeting you with a `login:` line, where you can sign in as the regular user you created earlier.
 
 ### Post-installation
 

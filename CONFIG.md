@@ -43,7 +43,7 @@ After this initial bootstrap, `yay` itself is a regular installed package and up
 
 ```bash
 sudo pacman -S kitty dolphin dunst waybar qt5-wayland qt6-wayland \
-               hyprland hyprlauncher hyprpaper hyprpolkitagent \
+               hyprland hyprlauncher hyprshutdown hyprpaper hyprpolkitagent \
                xdg-desktop-portal-hyprland
 ```
 
@@ -55,12 +55,15 @@ What each package does:
 - **`dunst`** — a lightweight notification daemon (Wayland-compatible).
 - **`waybar`** — the top/bottom status bar (clock, workspaces, system tray, etc.).
 - **`hyprlauncher`** — an application launcher for Hyprland.
+- **`hyprshutdown`** — an application that cleanly exits the Hyprland session.
 - **`hyprpaper`** — the wallpaper daemon.
 - **`hyprpolkitagent`** — the polkit authentication agent (lets GUI apps prompt for your password when they need root).
 - **`xdg-desktop-portal-hyprland`** — implements XDG desktop portals on Hyprland (needed for screen sharing, file pickers in flatpak apps, etc.).
 - **`qt5-wayland`** / **`qt6-wayland`** — Qt platform plugins so Qt apps render natively on Wayland instead of falling back to XWayland.
 
 The matching configuration files I use live under [.config/hypr/](.config/hypr/) and [.config/kitty/](.config/kitty/) in this repo — copy them into `~/.config/` after installation.
+
+> **Note:** the classic `hyprland.conf` (hyprlang) format is now deprecated — see the [Hyprland docs](https://wiki.hypr.land/Configuring/Start/). A Lua config (`hyprland.lua`) is the recommended way to configure Hyprland going forward, so this repo ships `config/hypr/hyprland.lua` instead.
 
 Once installed and configured, start the compositor from the TTY (text-mode login) with:
 
@@ -185,7 +188,7 @@ yay -S fcitx5-configtool
 
 Two helper commands you will use regularly:
 
-- **`fcitx5-remote`** — activates (starts) the Fcitx5 service. Run it once after login if Fcitx5 is not already autostarted by your session; my `hyprland.conf` calls it via `exec-once` so it launches with the desktop.
+- **`fcitx5-remote`** — activates (starts) the Fcitx5 service. Run it once after login if Fcitx5 is not already autostarted by your session; my `hyprland.lua` autostarts it (via `hl.exec_cmd` in the `hyprland.start` hook) so it launches with the desktop.
 - **`fcitx5-configtool`** — opens the configuration GUI, where you add **Pinyin** (or whichever engine you prefer) to the active input method list and tweak key bindings.
 
 The default toggle to switch between Chinese and English is **Ctrl+Space**.
@@ -270,7 +273,7 @@ This populates `~/.config/hypr/`, `~/.config/kitty/`, and `~/.config/micro/` in 
 
 ### Configure your monitor
 
-Hyprland does not pick up your monitor's resolution, refresh rate, or scale factor automatically — you have to tell it. The repo's [config/hypr/hyprland.conf](config/hypr/hyprland.conf) ships with the relevant line commented out near the top, because the output name and supported modes are machine-specific.
+Hyprland does not pick up your monitor's resolution, refresh rate, or scale factor automatically — you have to tell it. The repo's [config/hypr/hyprland.lua](config/hypr/hyprland.lua) ships with the relevant line commented out near the top, because the output name and supported modes are machine-specific.
 
 First, list the connected outputs and the modes they advertise:
 
@@ -278,10 +281,10 @@ First, list the connected outputs and the modes they advertise:
 hyprctl monitors
 ```
 
-Look for the `Monitor <NAME>` header (e.g. `HDMI-A-1`, `DP-1`, `eDP-1`) and the `availableModes` line just below. Pick the resolution and refresh rate you want, then uncomment and edit the `monitor =` line in `~/.config/hypr/hyprland.conf`. The syntax is `NAME, RESOLUTION@REFRESH, POSITION, SCALE`:
+Look for the `Monitor <NAME>` header (e.g. `HDMI-A-1`, `DP-1`, `eDP-1`) and the `availableModes` line just below. Pick the resolution and refresh rate you want, then uncomment and edit the `hl.monitor` line in `~/.config/hypr/hyprland.lua`. The fields are `output`, `mode` (`RESOLUTION@REFRESH`), `position`, and `scale`:
 
-```bash
-monitor = HDMI-A-1, 3840x2160@120, 0x0, 2
+```lua
+hl.monitor({ output = "HDMI-A-1", mode = "3840x2160@120", position = "0x0", scale = 2 })
 ```
 
 - **`HDMI-A-1`** — replace with the output name from `hyprctl monitors`.
@@ -291,35 +294,49 @@ monitor = HDMI-A-1, 3840x2160@120, 0x0, 2
 
 Save the file and Hyprland will hot-reload the new monitor settings. If you mistype the output name the screen goes black — first try `Super+M` to close the Hyprland session and drop back to the TTY, where you can fix the line and run `start-hyprland` again. If that keybind no longer responds, switch to a fresh TTY with `Ctrl+Alt+F2`, fix the line there, and switch back with `Ctrl+Alt+F1`.
 
+While you're at it, set your wallpaper in [config/hypr/hyprpaper.conf](config/hypr/hyprpaper.conf):
+
+```ini
+wallpaper {
+    monitor = 
+    path = /usr/share/hypr/wall2.png
+    fit_mode = cover
+}
+```
+
+An empty `monitor =` applies the wallpaper to all monitors; otherwise specify an output name (e.g. `HDMI-A-1`).
+
 ### Wayland and XWayland consistency
 
-Hyprland is a Wayland-native compositor, but a fair number of apps I rely on (most notably WeChat) still ship only X11 builds and run under XWayland. Without a bit of glue, those apps tend to misbehave — wrong window scaling, mismatched cursor sizes, blurry fonts. The snippets below are already baked into [config/hypr/hyprland.conf](config/hypr/hyprland.conf), so you shouldn't need any per-app workarounds. Everything here was tuned on a 4K display at 2× scaling; adjust the numbers to fit your own setup.
+Hyprland is a Wayland-native compositor, but a fair number of apps I rely on (most notably WeChat) still ship only X11 builds and run under XWayland. Without a bit of glue, those apps tend to misbehave — wrong window scaling, mismatched cursor sizes, blurry fonts. The snippets below are already baked into [config/hypr/hyprland.lua](config/hypr/hyprland.lua), so you shouldn't need any per-app workarounds. Everything here was tuned on a 4K display at 2× scaling; adjust the numbers to fit your own setup.
 
 Route every toolkit's input method through fcitx5 so Chinese input works in GTK, Qt, and X11 apps alike:
 
-```bash
-env = GTK_IM_MODULE,fcitx
-env = QT_IM_MODULE,fcitx
-env = XMODIFIERS,@im=fcitx
+```lua
+hl.env("GTK_IM_MODULE", "fcitx")
+hl.env("QT_IM_MODULE", "fcitx")
+hl.env("XMODIFIERS", "@im=fcitx")
 ```
 
 Pin a single cursor size across both display servers, and push Electron apps onto native Wayland. `XCURSOR_SIZE` controls XWayland clients while `HYPRCURSOR_SIZE` controls native Wayland ones — keeping them in lockstep prevents the cursor from visibly resizing as you cross between an X11 and a Wayland window. The `ELECTRON_OZONE_PLATFORM_HINT` setting nudges Electron apps like LinuxQQ and Discord to render via Wayland directly instead of going through XWayland, which fixes their HiDPI rendering:
 
-```bash
-env = XCURSOR_SIZE,24
-env = HYPRCURSOR_SIZE,24
-env = ELECTRON_OZONE_PLATFORM_HINT,wayland
+```lua
+hl.env("XCURSOR_SIZE", "24")
+hl.env("HYPRCURSOR_SIZE", "24")
+hl.env("ELECTRON_OZONE_PLATFORM_HINT", "wayland")
 ```
 
 Bump the DPI hint for legacy X11 apps and disable XWayland's own scaling pass. Writing `Xft.dpi` into `~/.Xresources` and merging it via `xrdb` is what makes apps like WeChat legible on HiDPI screens; `force_zero_scaling` then tells Hyprland not to scale those XWayland surfaces a second time on top of what the app already did:
 
-```bash
-exec-once = echo "Xft.dpi: 200" > ~/.Xresources
-exec-once = xrdb -merge ~/.Xresources
+```lua
+hl.exec_cmd([[echo "Xft.dpi: 200" > ~/.Xresources]])
+hl.exec_cmd("xrdb -merge ~/.Xresources")
 
-xwayland {
-    force_zero_scaling = true
-}
+hl.config({
+    xwayland = {
+        force_zero_scaling = true,
+    },
+})
 ```
 
 > **Heads up:** the `echo ... > ~/.Xresources` line **overwrites** `~/.Xresources` on every login. If you already maintain that file for other purposes (custom keysyms, terminal colors, etc.), comment this line out and add `Xft.dpi: 200` to your existing file by hand.
@@ -389,11 +406,6 @@ A few places where this config differs from typical Arch / Hyprland setups:
   | `Super+X` | Full-screen screenshot → `$HOME/YYMMDD_HH-MM-SS.png` |
 
   The screenshot bindings need `grim` and `slurp` (`sudo pacman -S grim slurp`). Neither prints an on-screen confirmation when triggered from the keybind — check `$HOME` for the new file, or run the same command in a terminal to see any error output.
-
-- **Brightness control is opt-in.** The `Super+Up` / `Super+Down` brightness bindings are shipped commented out in `config/hypr/hyprland.conf` because the right command depends on the hardware:
-  - **Laptops** (built-in panel): `sudo pacman -S brightnessctl`, then uncomment the `brightnessctl` lines.
-  - **Desktops with external monitors** (DDC/CI): `sudo pacman -S ddcutil`, then uncomment the `ddcutil` lines. The `--bus N` argument is monitor-specific — run `ddcutil detect` to find the right bus number (or paste its output to an AI and let it pick). Both paths are tested on my desktop and laptop respectively.
-  - **NVIDIA GPU output**: skip the keybindings entirely and install `nvidia-settings` — adjusting brightness/gamma in its GUI is the most convenient route when the display is driven by the NVIDIA driver.
 
 ### What it ends up looking like
 
