@@ -42,7 +42,7 @@ After this initial bootstrap, `yay` itself is a regular installed package and up
 [Hyprland](https://hypr.land/) is a modern, GPU-accelerated tiling Wayland compositor. The package list below installs Hyprland itself together with the supporting pieces I rely on day-to-day:
 
 ```bash
-sudo pacman -S kitty dolphin dunst waybar qt5-wayland qt6-wayland \
+sudo pacman -S kitty dolphin dunst qt5-wayland qt6-wayland \
                hyprland hyprlauncher hyprshutdown hyprpaper hyprpolkitagent \
                xdg-desktop-portal-hyprland
 ```
@@ -53,7 +53,6 @@ What each package does:
 - **`kitty`** — a fast, GPU-accelerated terminal emulator. My preferred terminal under Hyprland.
 - **`dolphin`** — KDE's graphical file manager.
 - **`dunst`** — a lightweight notification daemon (Wayland-compatible).
-- **`waybar`** — the top/bottom status bar (clock, workspaces, system tray, etc.).
 - **`hyprlauncher`** — an application launcher for Hyprland.
 - **`hyprshutdown`** — an application that cleanly exits the Hyprland session.
 - **`hyprpaper`** — the wallpaper daemon.

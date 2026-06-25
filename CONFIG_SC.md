@@ -42,7 +42,7 @@ cd .. && rm -rf yay   # 构建目录已不再需要
 [Hyprland](https://hypr.land/) 是一款现代化的、GPU 加速的平铺式 Wayland 合成器。下面这一条命令安装 Hyprland 本体，以及我日常依赖的配套部件：
 
 ```bash
-sudo pacman -S kitty dolphin dunst waybar qt5-wayland qt6-wayland \
+sudo pacman -S kitty dolphin dunst qt5-wayland qt6-wayland \
                hyprland hyprlauncher hyprshutdown hyprpaper hyprpolkitagent \
                xdg-desktop-portal-hyprland
 ```
@@ -53,7 +53,6 @@ sudo pacman -S kitty dolphin dunst waybar qt5-wayland qt6-wayland \
 - **`kitty`** —— 一款快速、GPU 加速的终端模拟器。是我在 Hyprland 下偏好的终端。
 - **`dolphin`** —— KDE 的图形化文件管理器。
 - **`dunst`** —— 轻量级通知守护进程（兼容 Wayland）。
-- **`waybar`** —— 顶部/底部状态栏（时钟、工作区、系统托盘等）。
 - **`hyprlauncher`** —— Hyprland 的应用启动器。
 - **`hyprshutdown`** —— 一个干净退出 Hyprland 会话的应用。
 - **`hyprpaper`** —— 壁纸守护进程。
