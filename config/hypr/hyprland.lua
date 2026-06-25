@@ -71,7 +71,7 @@ hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + G", hl.dsp.exec_cmd(browser))
-hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen_state({ internal = 2, client = 0 }))
+hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen_state({ internal = 2, client = 0, action = "toggle" }))
 hl.bind(mainMod .. " + Z", hl.dsp.exec_cmd([[grim -g "$(slurp)" "$HOME/$(date +'%y%m%d_%H-%M-%S').png"]]))
 hl.bind(mainMod .. " + X", hl.dsp.exec_cmd([[grim "$HOME/$(date +'%y%m%d_%H-%M-%S').png"]]))
 
