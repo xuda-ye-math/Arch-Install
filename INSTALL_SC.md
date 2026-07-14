@@ -20,7 +20,7 @@ Arch Linux 是一个滚动更新的发行版，强调简洁、极简，以及让
 注意:这一过程会擦除 U 盘上原有的所有数据，请务必先备份。烧录完成后，U 盘的样子应该与下图类似:
 
 <p align="center">
-  <img src="ISO.png" alt="Flashed Arch installation USB" width="800">
+  <img src="media/ISO.png" alt="Flashed Arch installation USB" width="800">
 </p>
 
 把 U 盘插入目标机器，进入 BIOS/UEFI 设置(开机时通常按 `F2`、`Del`、`F10` 或 `Esc`——具体按键因厂商而异)。关闭 **Secure Boot** 和 **Fast Boot**，然后把 U 盘移到启动顺序的第一位。保存设置并重启；系统会从 U 盘把 Arch live 环境加载到内存中，并把你带到一个 root shell，之后的所有安装步骤都在此处进行。

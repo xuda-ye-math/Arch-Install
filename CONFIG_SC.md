@@ -191,7 +191,7 @@ yay -S lact
 sudo systemctl enable --now lactd
 ```
 
-LACT 可以控制 GPU 与显存频率、功耗上限、温度和风扇行为。我的 LACT 设置示例见 [lact.png](lact.png)。
+LACT 可以控制 GPU 与显存频率、功耗上限、温度和风扇行为。我的 LACT 设置示例见 [lact.png](media/lact.png)。
 
 > ⚠️ **警告：** GPU 超频本身具有风险。不安全的频率、电压、功耗或温度设置可能导致系统不稳定、过热、硬件老化，甚至永久损坏显卡。只有在理解各项设置含义时才应修改它们；每次只做小幅调整，持续监控温度，并事先了解如何从不稳定配置中恢复。
 
@@ -204,7 +204,7 @@ yay -S nvitop-git
 运行 `nvitop` 后，会打开一个持续刷新且可交互的界面，显示 GPU 利用率、显存占用、温度以及正在运行的进程。它可以看作功能更丰富、更动态的 `nvidia-smi` 替代工具。
 
 <p align="center">
-  <img src="nvitop.png" alt="使用 nvitop 监控 NVIDIA GPU 状态" width="900">
+  <img src="media/nvitop.png" alt="使用 nvitop 监控 NVIDIA GPU 状态" width="900">
 </p>
 
 ### 安装字体
@@ -285,7 +285,7 @@ yay -S yazi
 - **`yazi`** —— 一个用 Rust 写的、速度很快的终端文件管理器，支持图像/媒体的内嵌预览，尤其适合 SSH 远程使用。它的图标依赖 Nerd Font 字形，因此需要安装一款 Nerd Font（例如本仓库[附带的 **Consolas Nerd Font**](fonts/)）。[官方网站](https://yazi-rs.github.io/)。
 
 <p align="center">
-  <img src="yazi.png" alt="yazi 浏览目录并显示内嵌图像预览" width="900">
+  <img src="media/yazi.png" alt="yazi 浏览目录并显示内嵌图像预览" width="900">
 </p>
 
 如果有其他你反复安装的软件，也可以加在这里 —— `yay -Ss <关键词>` 是一次性搜索官方仓库和 AUR 的便捷方式。
@@ -428,7 +428,7 @@ yay -S sound-blasterx-g6-control-git
 sudo pacman -S obs-studio
 ```
 
-在 Hyprland/Wayland 下录制整个桌面：在 OBS 的 `Sources` 面板里点 `+`，添加一个 **Screen Capture (PipeWire)** 源，弹出的 xdg-desktop-portal 对话框里选中你要录制的显示器即可。只要默认的 PipeWire 输入/输出设置正确（G6 用户由上面的项目自动处理；其他设备可以用 `pavucontrol` 手动指定），OBS 会自动同时录上麦克风和桌面内部的系统音频，无需额外设置。本文件夹里的 [`obs.mp4`](obs.mp4) 就是用这种方式录的一段示例（4K 屏幕捕获、麦克风 + 系统音频一起录制）。
+在 Hyprland/Wayland 下录制整个桌面：在 OBS 的 `Sources` 面板里点 `+`，添加一个 **Screen Capture (PipeWire)** 源，弹出的 xdg-desktop-portal 对话框里选中你要录制的显示器即可。只要默认的 PipeWire 输入/输出设置正确（G6 用户由上面的项目自动处理；其他设备可以用 `pavucontrol` 手动指定），OBS 会自动同时录上麦克风和桌面内部的系统音频，无需额外设置。[`obs.mp4`](media/obs.mp4) 就是用这种方式录的一段示例（4K 屏幕捕获、麦克风 + 系统音频一起录制）。
 
 ### 关于个人偏好的几点说明
 
@@ -462,7 +462,7 @@ sudo pacman -S obs-studio
 按上面所有步骤安装好、并把 dotfiles 放到位之后，我的 ROG 桌面机上的画面看起来是这样：
 
 <p align="center">
-  <img src="arch.png" alt="配置完成后的 Hyprland 桌面" width="900">
+  <img src="media/arch.png" alt="配置完成后的 Hyprland 桌面" width="900">
 </p>
 
 ---

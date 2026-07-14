@@ -191,7 +191,7 @@ yay -S lact
 sudo systemctl enable --now lactd
 ```
 
-LACT provides controls for GPU and VRAM clock speeds, power limits, thermals, and fan behavior. A sample of my LACT setup is available in [lact.png](lact.png).
+LACT provides controls for GPU and VRAM clock speeds, power limits, thermals, and fan behavior. A sample of my LACT setup is available in [lact.png](media/lact.png).
 
 > ⚠️ **Warning:** GPU overclocking is inherently risky. Unsafe clock, voltage, power, or thermal settings can cause instability, overheating, hardware degradation, and potentially permanent damage to the graphics card. Change these settings only if you understand what they do, make small adjustments, monitor temperatures, and know how to recover from an unstable configuration.
 
@@ -204,7 +204,7 @@ yay -S nvitop-git
 Run it with `nvitop` to open a continuously updating, interactive view of GPU utilization, memory usage, temperatures, and running processes. It is essentially a more capable and dynamic alternative to `nvidia-smi`.
 
 <p align="center">
-  <img src="nvitop.png" alt="nvitop monitoring NVIDIA GPU status" width="900">
+  <img src="media/nvitop.png" alt="nvitop monitoring NVIDIA GPU status" width="900">
 </p>
 
 ### Install fonts
@@ -285,7 +285,7 @@ yay -S yazi
 - **`yazi`** — A fast Rust terminal file manager with inline image previews, especially handy over SSH connections. Its icons are Nerd Font glyphs, so a Nerd Font (e.g. the **Consolas Nerd Font** [shipped here](fonts/)) must be installed. [Official site](https://yazi-rs.github.io/).
 
 <p align="center">
-  <img src="yazi.png" alt="yazi browsing a directory with an inline image preview" width="900">
+  <img src="media/yazi.png" alt="yazi browsing a directory with an inline image preview" width="900">
 </p>
 
 Add anything else here that you find yourself installing repeatedly — `yay -Ss <keyword>` is a quick way to search both the official repos and the AUR at once.
@@ -428,7 +428,7 @@ For real voice or screen recording — anything beyond the `arecord` smoke test 
 sudo pacman -S obs-studio
 ```
 
-To record the whole desktop on Hyprland/Wayland, add a **Screen Capture (PipeWire)** source in OBS (`Sources` panel → `+` → `Screen Capture (PipeWire)`) and pick the monitor when the xdg-desktop-portal dialog pops up. As long as your default PipeWire input/output is set correctly (which the G6 project handles automatically if you're on a G6, or which `pavucontrol` lets you set by hand otherwise), OBS will also pick up the microphone and the desktop's internal system audio without further setup. See [`obs.mp4`](obs.mp4) in this folder for an example clip captured this way (4K screen capture, microphone + internal system sound recorded together).
+To record the whole desktop on Hyprland/Wayland, add a **Screen Capture (PipeWire)** source in OBS (`Sources` panel → `+` → `Screen Capture (PipeWire)`) and pick the monitor when the xdg-desktop-portal dialog pops up. As long as your default PipeWire input/output is set correctly (which the G6 project handles automatically if you're on a G6, or which `pavucontrol` lets you set by hand otherwise), OBS will also pick up the microphone and the desktop's internal system audio without further setup. See [`obs.mp4`](media/obs.mp4) for an example clip captured this way (4K screen capture, microphone + internal system sound recorded together).
 
 ### A note on my preferences
 
@@ -462,5 +462,5 @@ A few places where this config differs from typical Arch / Hyprland setups:
 Once everything above is installed and the dotfiles are in place, the desktop on my ROG machine looks like this:
 
 <p align="center">
-  <img src="arch.png" alt="My configured Hyprland desktop" width="900">
+  <img src="media/arch.png" alt="My configured Hyprland desktop" width="900">
 </p>

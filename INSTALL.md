@@ -20,7 +20,7 @@ You will need a USB drive (at least 4 GB, ideally 8 GB or more) and the latest A
 Note that this process will erase any existing data on the USB drive, so make sure to back it up first. Once flashing has completed, the drive should appear similar to the screenshot below:
 
 <p align="center">
-  <img src="ISO.png" alt="Flashed Arch installation USB" width="800">
+  <img src="media/ISO.png" alt="Flashed Arch installation USB" width="800">
 </p>
 
 Plug the USB drive into the target machine and enter the BIOS/UEFI settings (usually by pressing `F2`, `Del`, `F10`, or `Esc` during power-on — the exact key varies by manufacturer). Disable **Secure Boot** and **Fast Boot**, then move the USB drive to the top of the boot order. Save the changes and reboot; the system will load the Arch live environment from the USB into RAM and drop you into a root shell, from which the rest of the installation proceeds.

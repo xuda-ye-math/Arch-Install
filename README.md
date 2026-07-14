@@ -5,7 +5,7 @@ A personal, beginner-friendly walkthrough for installing Arch Linux on a single 
 *个人向、面向新手的 Arch Linux 安装与配置指南——从单块 NVMe SSD 上的全新安装，一路到一台日常可用的 Hyprland 工作站，并附带我实际使用的所有 dotfiles、字体与配置文件。*
 
 <p align="center">
-  <img src="arch.png" alt="The finished Hyprland desktop on my ROG machine" width="900">
+  <img src="media/arch.png" alt="The finished Hyprland desktop on my ROG machine" width="900">
 </p>
 
 ---
@@ -20,6 +20,7 @@ A personal, beginner-friendly walkthrough for installing Arch Linux on a single 
 | [CONFIG.md](CONFIG.md) | Post-install configuration — zsh + Oh My Zsh, Hyprland + Wayle (desktop bar, notifications, and wallpaper), kitty, Dolphin, PipeWire audio, fonts, fcitx5 Chinese input, NVIDIA drivers, an AUR helper, and VS Code dotfiles. |
 | [config/](config/) | My personal dotfiles for Hyprland, Wayle, kitty, micro, and fontconfig — drop them into `~/.config/`. |
 | [fonts/](fonts/) | The patched **Consolas Nerd Font** (Regular + Italic) referenced by the kitty config. |
+| [media/](media/) | Screenshots and the example OBS recording embedded in the guides. |
 | [INSTALL_SC.md](INSTALL_SC.md) / [CONFIG_SC.md](CONFIG_SC.md) | Simplified Chinese translations (machine-generated; English versions are canonical). |
 
 > 🔈 **Using a Creative Sound BlasterX G6?** The G6-specific setup that used to live in this repo has moved to its own project, [`Sound-BlasterX-G6-Control`](https://github.com/xuda-ye-math/Sound-BlasterX-G6-Control). One-line install on Arch: `yay -S sound-blasterx-g6-control-git`.
@@ -58,6 +59,7 @@ Then read `INSTALL.md` end-to-end for the base install, followed by `CONFIG.md` 
 | [CONFIG.md](CONFIG.md) | 安装后的配置——zsh + Oh My Zsh、Hyprland + Wayle（桌面栏、通知和壁纸）、kitty、Dolphin、PipeWire 音频、字体、fcitx5 中文输入法、NVIDIA 显卡驱动、AUR 助手以及 VS Code 配置。 |
 | [config/](config/) | 我个人的 dotfiles，包含 Hyprland、Wayle、kitty、micro 以及 fontconfig 的配置——直接复制到 `~/.config/` 即可。 |
 | [fonts/](fonts/) | kitty 配置所引用的、打过补丁的 **Consolas Nerd Font**(Regular + Italic)。 |
+| [media/](media/) | 指南中嵌入的截图和 OBS 示例录像。 |
 | [INSTALL_SC.md](INSTALL_SC.md) / [CONFIG_SC.md](CONFIG_SC.md) | 简体中文译文(机器翻译；以英文版为准)。 |
 
 > 🔈 **在用 Creative Sound BlasterX G6？** 这份配置以前包含的 G6 专用设置已经独立成单独的项目 [`Sound-BlasterX-G6-Control`](https://github.com/xuda-ye-math/Sound-BlasterX-G6-Control)。Arch 上一行安装：`yay -S sound-blasterx-g6-control-git`。
