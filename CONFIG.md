@@ -42,8 +42,8 @@ After this initial bootstrap, `yay` itself is a regular installed package and up
 [Hyprland](https://hypr.land/) is a modern, GPU-accelerated tiling Wayland compositor. The package list below installs Hyprland itself together with the supporting pieces I rely on day-to-day:
 
 ```bash
-sudo pacman -S kitty dolphin dunst qt5-wayland qt6-wayland \
-               hyprland hyprlauncher hyprshutdown hyprpaper hyprpolkitagent \
+sudo pacman -S kitty dolphin qt5-wayland qt6-wayland \
+               hyprland hyprlauncher hyprshutdown hyprpolkitagent \
                xdg-desktop-portal-hyprland
 ```
 
@@ -52,15 +52,13 @@ What each package does:
 - **`hyprland`** — the compositor (the window manager itself).
 - **`kitty`** — a fast, GPU-accelerated terminal emulator. My preferred terminal under Hyprland.
 - **`dolphin`** — KDE's graphical file manager.
-- **`dunst`** — a lightweight notification daemon (Wayland-compatible).
 - **`hyprlauncher`** — an application launcher for Hyprland.
 - **`hyprshutdown`** — an application that cleanly exits the Hyprland session.
-- **`hyprpaper`** — the wallpaper daemon.
 - **`hyprpolkitagent`** — the polkit authentication agent (lets GUI apps prompt for your password when they need root).
 - **`xdg-desktop-portal-hyprland`** — implements XDG desktop portals on Hyprland (needed for screen sharing, file pickers in flatpak apps, etc.).
 - **`qt5-wayland`** / **`qt6-wayland`** — Qt platform plugins so Qt apps render natively on Wayland instead of falling back to XWayland.
 
-The matching configuration files I use live under [.config/hypr/](.config/hypr/) and [.config/kitty/](.config/kitty/) in this repo — copy them into `~/.config/` after installation.
+The matching configuration files I use live under [config/hypr/](config/hypr/) and [config/kitty/](config/kitty/) in this repo — copy them into `~/.config/` after installation.
 
 > **Note:** the classic `hyprland.conf` (hyprlang) format is now deprecated — see the [Hyprland docs](https://wiki.hypr.land/Configuring/Start/). A Lua config (`hyprland.lua`) is the recommended way to configure Hyprland going forward, so this repo ships `config/hypr/hyprland.lua` instead.
 
@@ -70,20 +68,60 @@ Once installed and configured, start the compositor from the TTY (text-mode logi
 start-hyprland
 ```
 
-Hyprland, like any desktop environment, renders your screen on the GPU — but its minimalism makes it dramatically lighter than the alternatives. On my 4K @ 120 Hz panel its resident VRAM footprint sits around 0.5 GB, which leaves plenty of headroom for heavy GPU workloads like deep-learning training. And on the rare occasion you want a *pure* compute environment, you can simply exit Hyprland back to the TTY with `Super+M`. By comparison, dropping out of GNOME or KDE Plasma to free the GPU normally means something like:
-
-```bash
-sudo systemctl isolate multi-user.target  # generic
-sudo systemctl stop sddm                  # KDE-specific
-```
-
-— commands that need root, are easy to get wrong, and have a knack for occasionally locking up the machine.
+Hyprland, like any desktop environment, renders your screen on the GPU — but its minimalism makes it dramatically lighter than the alternatives. On my 4K @ 120 Hz panel its resident VRAM footprint sits around 0.5 GB, which leaves plenty of headroom for heavy GPU workloads like deep-learning training. And on the rare occasion you want a *pure* compute environment, you can simply exit Hyprland back to the TTY with `Super+M`.
 
 If you also want the discrete GPU fully untouched by the desktop — `nvidia-smi` reading 0 % even while Hyprland is running — and your CPU has integrated graphics with a display output, there's a simpler trick than fiddling with Wayland's render-device settings or installing extra software:
 
 - **Plug your HDMI/DP cable into the motherboard's video output rather than the graphics card.** The desktop is then composited by the iGPU, leaving the full VRAM and all of the dGPU's compute cores available for headless workloads like deep-learning training. Swap the cable back into the graphics card when you need the dGPU to drive the monitor directly — for example when doing real 3D-object rendering in games or Blender's interactive viewport.
 
 On laptops none of this applies: hybrid-graphics models already wire the internal display to the iGPU by default.
+
+> **Note:** If you do not intend to use Wayle, install `dunst` for notifications and `hyprpaper` for wallpaper management with `sudo pacman -S dunst hyprpaper`.
+
+### Install Wayle
+
+[Wayle](https://wayle.app/) is a Wayland desktop shell that combines a desktop bar, notifications, an on-screen display (OSD), wallpaper management, and device controls in one application. It provides a prebuilt package for Arch Linux and native integration with Hyprland, making it a convenient way to manage the desktop without running separate bar, notification, and wallpaper programs.
+
+Install the prebuilt package from the AUR with `yay`:
+
+```bash
+yay -S wayle-bin
+```
+
+Wayle exposes its desktop services through the `wayle <COMMAND>` interface:
+
+- **`audio`**, **`media`**, and **`power`** — control audio devices, media playback, and power profiles.
+- **`notify`**, **`panel`**, and **`systray`** — manage notifications, the desktop panel, and system tray items.
+- **`wallpaper`** and **`idle`** — manage wallpapers and idle inhibition.
+- **`config`** and **`icons`** — manage Wayle's configuration and icon assets.
+- **`shell`** — run the complete desktop shell in the foreground.
+- **`completions`** — generate shell completions.
+
+Run `wayle` without a subcommand to display the complete command list and usage information. To launch the desktop shell in the foreground and bring up the bar manually, run:
+
+```bash
+wayle shell
+```
+
+The [Hyprland configuration shipped with this repo](config/hypr/hyprland.lua) runs `wayle shell` automatically when the Hyprland session starts, so the manual command is mainly useful for testing and troubleshooting.
+
+Set the wallpaper to Hyprland's bundled default image with:
+
+```bash
+wayle wallpaper set /usr/share/hypr/wall2.png
+```
+
+To use a different wallpaper, replace `/usr/share/hypr/wall2.png` with the path to any image you prefer.
+
+Open Wayle's graphical configuration window with:
+
+```bash
+wayle-settings
+```
+
+> **Current limitation:** `wayle-settings` does not currently provide a wallpaper picker. This is an odd omission, but for now the direct way to change the wallpaper is to run `wayle wallpaper set <PATH>` from the command line.
+
+My Wayle settings live under [config/wayle/](config/wayle/) and are installed by the [settings-copy step](#copy-my-settings-of-hyprland-wayle-kitty-micro-and-vs-code) later in this guide.
 
 ### Audio and video playback
 
@@ -129,7 +167,7 @@ sudo pacman -S curl cmake os-prober trash-cli zip unzip \
 
 ### NVIDIA drivers
 
-If your machine has a recent NVIDIA GPU (Turing or newer), the open-source kernel modules are the recommended choice as of 2025:
+If your machine has a recent NVIDIA GPU (Turing or newer), the open-source kernel modules are the recommended choice:
 
 ```bash
 sudo pacman -S nvidia-open nvidia-utils
@@ -142,9 +180,32 @@ sudo pacman -S vulkan-icd-loader
 
 The NVIDIA kernel modules are not loaded into the currently running kernel — a **reboot** is required before the driver actually takes effect. Without it, `nvidia-smi` will fail and Hyprland may refuse to start.
 
-> ⚠️ **Important:** NVIDIA + Wayland still has rough edges. After installing the drivers, reboot, then verify with `nvidia-smi` that the kernel module loaded correctly. If you see flickering or black screens under Hyprland, consult the [Hyprland NVIDIA page](https://wiki.hyprland.org/Nvidia/) for the current set of environment variables and `modprobe` tweaks.
+> ⚠️ **Important:** NVIDIA + Wayland still has rough edges. After installing the drivers, reboot, then verify with `nvidia-smi` that the kernel module loaded correctly. If you see flickering or black screens under Hyprland, consult the [Hyprland NVIDIA page](https://wiki.hypr.land/Nvidia/) for the current set of environment variables and `modprobe` tweaks.
 
 If your card is older than Turing or you encounter issues with the open modules, fall back to the proprietary blob with `sudo pacman -S nvidia nvidia-utils` instead.
+
+For graphical GPU monitoring and overclocking, you can use [LACT](https://github.com/ilya-zlobintsev/LACT). Install it and enable its system service with:
+
+```bash
+yay -S lact
+sudo systemctl enable --now lactd
+```
+
+LACT provides controls for GPU and VRAM clock speeds, power limits, thermals, and fan behavior. A sample of my LACT setup is available in [lact.png](lact.png).
+
+> ⚠️ **Warning:** GPU overclocking is inherently risky. Unsafe clock, voltage, power, or thermal settings can cause instability, overheating, hardware degradation, and potentially permanent damage to the graphics card. Change these settings only if you understand what they do, make small adjustments, monitor temperatures, and know how to recover from an unstable configuration.
+
+For monitoring NVIDIA GPUs while compute workloads are running, install [nvitop](https://github.com/XuehaiPan/nvitop):
+
+```bash
+yay -S nvitop-git
+```
+
+Run it with `nvitop` to open a continuously updating, interactive view of GPU utilization, memory usage, temperatures, and running processes. It is essentially a more capable and dynamic alternative to `nvidia-smi`.
+
+<p align="center">
+  <img src="nvitop.png" alt="nvitop monitoring NVIDIA GPU status" width="900">
+</p>
 
 ### Install fonts
 
@@ -256,19 +317,19 @@ The `-n` (dry-run) flag is worth getting in the habit of: btrbk prints exactly w
 
 Restore a file by copying it back out of `/.snapshots/<timestamp>/`, or roll the whole subvolume back with `btrfs subvolume snapshot` in the other direction. If you ever want this to run on a schedule, enable the `btrbk.timer` unit shipped by the package.
 
-### Copy my settings of Hyprland, kitty, micro and VS Code
+### Copy my settings of Hyprland, Wayle, kitty, micro and VS Code
 
 From the root of this cloned repository, drop my dotfiles into `~/.config/` and install the Consolas Nerd Font that the kitty config depends on (the font block is repeated from the [Install fonts](#install-fonts) section above — running it twice is harmless):
 
 ```bash
 mkdir -p ~/.config ~/.config/Code/User ~/.local/share/fonts
-cp -r config/{hypr,kitty,micro} ~/.config/
+cp -r config/{hypr,wayle,kitty,micro} ~/.config/
 cp config/Code/{settings.json,keybindings.json} ~/.config/Code/User/
 cp fonts/ConsolasNerdFont_*.ttf ~/.local/share/fonts/
 fc-cache -fv
 ```
 
-This populates `~/.config/hypr/`, `~/.config/kitty/`, and `~/.config/micro/` in one shot, drops my VS Code `settings.json` and `keybindings.json` into `~/.config/Code/User/`, plus registers the Nerd Font with fontconfig. If any of those directories already exist with your own settings, back them up first (e.g. `mv ~/.config/hypr ~/.config/hypr.bak`) — `cp -r` overwrites individual files but does not merge them intelligently.
+This populates `~/.config/hypr/`, `~/.config/wayle/`, `~/.config/kitty/`, and `~/.config/micro/` in one shot, drops my VS Code `settings.json` and `keybindings.json` into `~/.config/Code/User/`, plus registers the Nerd Font with fontconfig. If any of those directories already exist with your own settings, back them up first (e.g. `mv ~/.config/hypr ~/.config/hypr.bak`) — `cp -r` overwrites individual files but does not merge them intelligently.
 
 ### Configure your monitor
 
@@ -293,17 +354,7 @@ hl.monitor({ output = "HDMI-A-1", mode = "3840x2160@120", position = "0x0", scal
 
 Save the file and Hyprland will hot-reload the new monitor settings. If you mistype the output name the screen goes black — first try `Super+M` to close the Hyprland session and drop back to the TTY, where you can fix the line and run `start-hyprland` again. If that keybind no longer responds, switch to a fresh TTY with `Ctrl+Alt+F2`, fix the line there, and switch back with `Ctrl+Alt+F1`.
 
-While you're at it, set your wallpaper in [config/hypr/hyprpaper.conf](config/hypr/hyprpaper.conf):
-
-```ini
-wallpaper {
-    monitor = 
-    path = /usr/share/hypr/wall2.png
-    fit_mode = cover
-}
-```
-
-An empty `monitor =` applies the wallpaper to all monitors; otherwise specify an output name (e.g. `HDMI-A-1`).
+Wallpaper selection is handled separately by Wayle; see [Install Wayle](#install-wayle) for the default image command and how to choose a different path.
 
 ### Wayland and XWayland consistency
 
@@ -411,5 +462,5 @@ A few places where this config differs from typical Arch / Hyprland setups:
 Once everything above is installed and the dotfiles are in place, the desktop on my ROG machine looks like this:
 
 <p align="center">
-  <img src="screenshot.png" alt="My configured Hyprland desktop" width="900">
+  <img src="arch.png" alt="My configured Hyprland desktop" width="900">
 </p>

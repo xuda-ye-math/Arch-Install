@@ -28,7 +28,7 @@ hl.env("ELECTRON_OZONE_PLATFORM_HINT", "wayland")
 
 hl.on("hyprland.start", function()
     -- desktop setting
-    hl.exec_cmd("hyprpaper")
+    hl.exec_cmd("wayle shell")
     hl.exec_cmd("fcitx5-remote")
 
     -- x11 config
@@ -41,9 +41,8 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE")
     hl.exec_cmd("systemctl --user start hyprland-session.target")
 
-    -- Polkit auth agent: provides GUI password dialogs for pkexec (g6-gui Audio Initialize, etc.).
-    hl.exec_cmd("sh -c 'sleep 3 && systemctl --user enable --now hyprpolkitagent.service'")
-    hl.exec_cmd("sh -c 'sleep 3 && g6-cli init --no'")
+    -- Polkit auth agent: provides GUI password dialogs for pkexec
+    -- hl.exec_cmd("sh -c 'sleep 3 && systemctl --user enable --now hyprpolkitagent.service'") --
 end)
 
 

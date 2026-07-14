@@ -42,8 +42,8 @@ cd .. && rm -rf yay   # 构建目录已不再需要
 [Hyprland](https://hypr.land/) 是一款现代化的、GPU 加速的平铺式 Wayland 合成器。下面这一条命令安装 Hyprland 本体，以及我日常依赖的配套部件：
 
 ```bash
-sudo pacman -S kitty dolphin dunst qt5-wayland qt6-wayland \
-               hyprland hyprlauncher hyprshutdown hyprpaper hyprpolkitagent \
+sudo pacman -S kitty dolphin qt5-wayland qt6-wayland \
+               hyprland hyprlauncher hyprshutdown hyprpolkitagent \
                xdg-desktop-portal-hyprland
 ```
 
@@ -52,15 +52,13 @@ sudo pacman -S kitty dolphin dunst qt5-wayland qt6-wayland \
 - **`hyprland`** —— 合成器本体（也就是窗口管理器）。
 - **`kitty`** —— 一款快速、GPU 加速的终端模拟器。是我在 Hyprland 下偏好的终端。
 - **`dolphin`** —— KDE 的图形化文件管理器。
-- **`dunst`** —— 轻量级通知守护进程（兼容 Wayland）。
 - **`hyprlauncher`** —— Hyprland 的应用启动器。
 - **`hyprshutdown`** —— 一个干净退出 Hyprland 会话的应用。
-- **`hyprpaper`** —— 壁纸守护进程。
 - **`hyprpolkitagent`** —— polkit 认证代理（让 GUI 应用在需要 root 权限时弹出密码提示）。
 - **`xdg-desktop-portal-hyprland`** —— 在 Hyprland 上实现 XDG 桌面 portal（屏幕共享、flatpak 应用中的文件选择器等会用到）。
 - **`qt5-wayland`** / **`qt6-wayland`** —— Qt 平台插件，让 Qt 应用以原生 Wayland 方式渲染，而不是退回到 XWayland。
 
-我所用的配置文件都在本仓库的 [.config/hypr/](.config/hypr/) 和 [.config/kitty/](.config/kitty/) 下 —— 安装完成后把它们复制到 `~/.config/`。
+我所用的配置文件都在本仓库的 [config/hypr/](config/hypr/) 和 [config/kitty/](config/kitty/) 下 —— 安装完成后把它们复制到 `~/.config/`。
 
 > **注意：** 经典的 `hyprland.conf`（hyprlang）格式现已弃用 —— 详见 [Hyprland 文档](https://wiki.hypr.land/Configuring/Start/)。今后推荐用 Lua 配置（`hyprland.lua`）来配置 Hyprland，因此本仓库改为提供 `config/hypr/hyprland.lua`。
 
@@ -70,20 +68,60 @@ sudo pacman -S kitty dolphin dunst qt5-wayland qt6-wayland \
 start-hyprland
 ```
 
-Hyprland 和其他桌面环境一样，依赖 GPU 来渲染画面 —— 但凭借它的极简设计，比其他方案要轻得多。在我的 4K @ 120 Hz 屏幕上，Hyprland 常驻的显存占用只有约 0.5 GB，给深度学习训练这类重型 GPU 工作负载留出了非常充裕的余量。如果偶尔需要一个*纯*计算环境，只要按 `Super+M` 就能干净地退出 Hyprland 回到 TTY。相比之下，要让 GNOME 或 KDE Plasma 把 GPU 释放出来，通常得运行类似这样的命令：
-
-```bash
-sudo systemctl isolate multi-user.target  # 通用做法
-sudo systemctl stop sddm                  # 针对 KDE
-```
-
-—— 这些命令需要 root 权限，容易出错，而且偶尔会把机器卡死。
+Hyprland 和其他桌面环境一样，依赖 GPU 来渲染画面 —— 但凭借它的极简设计，比其他方案要轻得多。在我的 4K @ 120 Hz 屏幕上，Hyprland 常驻的显存占用只有约 0.5 GB，给深度学习训练这类重型 GPU 工作负载留出了非常充裕的余量。如果偶尔需要一个*纯*计算环境，只要按 `Super+M` 就能干净地退出 Hyprland 回到 TTY。
 
 如果还想让独立显卡完全不被桌面占用 —— 即便 Hyprland 正在运行，`nvidia-smi` 也读到 0%，而且你的 CPU 自带集成显卡且主板有视频输出口，有一个比修改 Wayland 渲染设备设置或安装额外软件都更省事的小窍门：
 
 - **把 HDMI/DP 线插到主板的视频输出口上，而不是显卡上。** 桌面就会由 iGPU 合成，dGPU 的整块显存和全部计算核心都空出来给深度学习训练这类无显示需求的工作负载使用。如果需要让 dGPU 直接驱动显示器（例如玩游戏，或者用 Blender 实时视口做真正的 3D 物体渲染时），把线再插回显卡上即可。
 
 笔记本上不必做这些：混合显卡机型默认就已经把内屏接到 iGPU 上了。
+
+> **注意：** 如果不打算使用 Wayle，请安装 `dunst` 来管理通知，并安装 `hyprpaper` 来设置壁纸：`sudo pacman -S dunst hyprpaper`。
+
+### 安装 Wayle
+
+[Wayle](https://wayle.app/) 是一款 Wayland 桌面 shell，将桌面栏、通知、屏显（OSD）、壁纸管理和设备控制整合在一个应用中。它为 Arch Linux 提供预编译软件包，并原生集成 Hyprland，因此无需分别运行桌面栏、通知和壁纸程序，也能方便地管理整个桌面。
+
+使用 `yay` 安装 AUR 中的预编译软件包：
+
+```bash
+yay -S wayle-bin
+```
+
+Wayle 通过 `wayle <命令>` 接口提供各项桌面服务：
+
+- **`audio`**、**`media`** 和 **`power`** —— 控制音频设备、媒体播放和电源配置。
+- **`notify`**、**`panel`** 和 **`systray`** —— 管理通知、桌面面板和系统托盘项目。
+- **`wallpaper`** 和 **`idle`** —— 管理壁纸和空闲抑制。
+- **`config`** 和 **`icons`** —— 管理 Wayle 配置和图标资源。
+- **`shell`** —— 在前台运行完整的桌面 shell。
+- **`completions`** —— 生成 shell 自动补全脚本。
+
+不带子命令直接运行 `wayle`，即可查看完整的命令列表和用法。要手动在前台启动桌面 shell 并显示桌面栏，请运行：
+
+```bash
+wayle shell
+```
+
+本仓库附带的 [Hyprland 配置](config/hypr/hyprland.lua)会在 Hyprland 会话启动时自动运行 `wayle shell`，所以手动执行主要用于测试和故障排查。
+
+使用 Hyprland 自带的默认图片作为壁纸：
+
+```bash
+wayle wallpaper set /usr/share/hypr/wall2.png
+```
+
+如果想换成其他壁纸，把 `/usr/share/hypr/wall2.png` 替换为你喜欢的任意图片路径即可。
+
+使用下面的命令打开 Wayle 图形化设置窗口：
+
+```bash
+wayle-settings
+```
+
+> **当前限制：** `wayle-settings` 目前没有提供壁纸选择器。这个缺失确实有些奇怪，但现阶段要直接更换壁纸，还是需要在命令行运行 `wayle wallpaper set <路径>`。
+
+我的 Wayle 配置位于 [config/wayle/](config/wayle/)，将在本指南后面的配置复制步骤中安装。
 
 ### 音视频播放
 
@@ -129,7 +167,7 @@ sudo pacman -S curl cmake os-prober trash-cli zip unzip \
 
 ### NVIDIA 显卡驱动
 
-如果你的机器装有较新的 NVIDIA 显卡（Turing 架构或更新），截至 2025 年，开源内核模块是推荐选择：
+如果你的机器装有较新的 NVIDIA 显卡（Turing 架构或更新），开源内核模块是推荐选择：
 
 ```bash
 sudo pacman -S nvidia-open nvidia-utils
@@ -142,9 +180,32 @@ sudo pacman -S vulkan-icd-loader
 
 NVIDIA 内核模块并不会被加载进当前运行的内核 —— 驱动要真正生效，需要**重启**。否则 `nvidia-smi` 会失败，Hyprland 也可能拒绝启动。
 
-> ⚠️ **重要：**NVIDIA + Wayland 至今仍有不少粗糙之处。装完驱动后请重启，然后用 `nvidia-smi` 确认内核模块已正确加载。如果在 Hyprland 下看到闪屏或黑屏，请查阅 [Hyprland NVIDIA 页面](https://wiki.hyprland.org/Nvidia/)获取当前一组推荐的环境变量和 `modprobe` 调整。
+> ⚠️ **重要：**NVIDIA + Wayland 至今仍有不少粗糙之处。装完驱动后请重启，然后用 `nvidia-smi` 确认内核模块已正确加载。如果在 Hyprland 下看到闪屏或黑屏，请查阅 [Hyprland NVIDIA 页面](https://wiki.hypr.land/Nvidia/)获取当前一组推荐的环境变量和 `modprobe` 调整。
 
 如果你的显卡比 Turing 更老，或者使用开源模块时遇到问题，可以退回到专有 blob：`sudo pacman -S nvidia nvidia-utils`。
+
+如果想通过图形界面监控 GPU 并进行超频，可以使用 [LACT](https://github.com/ilya-zlobintsev/LACT)。安装后启用它的系统服务：
+
+```bash
+yay -S lact
+sudo systemctl enable --now lactd
+```
+
+LACT 可以控制 GPU 与显存频率、功耗上限、温度和风扇行为。我的 LACT 设置示例见 [lact.png](lact.png)。
+
+> ⚠️ **警告：** GPU 超频本身具有风险。不安全的频率、电压、功耗或温度设置可能导致系统不稳定、过热、硬件老化，甚至永久损坏显卡。只有在理解各项设置含义时才应修改它们；每次只做小幅调整，持续监控温度，并事先了解如何从不稳定配置中恢复。
+
+在运行 GPU 计算程序时，可以安装 [nvitop](https://github.com/XuehaiPan/nvitop) 来监控 NVIDIA GPU：
+
+```bash
+yay -S nvitop-git
+```
+
+运行 `nvitop` 后，会打开一个持续刷新且可交互的界面，显示 GPU 利用率、显存占用、温度以及正在运行的进程。它可以看作功能更丰富、更动态的 `nvidia-smi` 替代工具。
+
+<p align="center">
+  <img src="nvitop.png" alt="使用 nvitop 监控 NVIDIA GPU 状态" width="900">
+</p>
 
 ### 安装字体
 
@@ -256,19 +317,19 @@ sudo btrbk list snapshots
 
 要恢复单个文件，从 `/.snapshots/<时间戳>/` 把它复制出来即可；如果要回滚整个子卷，可以反过来用 `btrfs subvolume snapshot` 操作。如果将来想让它按计划运行，启用 btrbk 包里附带的 `btrbk.timer` 单元即可。
 
-### 复制我的 Hyprland、kitty、micro 和 VS Code 配置
+### 复制我的 Hyprland、Wayle、kitty、micro 和 VS Code 配置
 
 在克隆下来的本仓库根目录下，把我的 dotfiles 放入 `~/.config/`，同时安装 kitty 配置所需的 Consolas Nerd Font（字体那一段与上面[安装字体](#安装字体)一节中的命令重复 —— 重复执行也没有副作用）：
 
 ```bash
 mkdir -p ~/.config ~/.config/Code/User ~/.local/share/fonts
-cp -r config/{hypr,kitty,micro} ~/.config/
+cp -r config/{hypr,wayle,kitty,micro} ~/.config/
 cp config/Code/{settings.json,keybindings.json} ~/.config/Code/User/
 cp fonts/ConsolasNerdFont_*.ttf ~/.local/share/fonts/
 fc-cache -fv
 ```
 
-这一条会把 `~/.config/hypr/`、`~/.config/kitty/`、`~/.config/micro/` 一次性填好，并把我的 VS Code `settings.json` 与 `keybindings.json` 放入 `~/.config/Code/User/`，同时将 Nerd Font 注册到 fontconfig。如果上述目录里已经存有你自己的配置，请先备份（例如 `mv ~/.config/hypr ~/.config/hypr.bak`）—— `cp -r` 会覆盖单个文件，但不会做智能合并。
+这一条会把 `~/.config/hypr/`、`~/.config/wayle/`、`~/.config/kitty/`、`~/.config/micro/` 一次性填好，并把我的 VS Code `settings.json` 与 `keybindings.json` 放入 `~/.config/Code/User/`，同时将 Nerd Font 注册到 fontconfig。如果上述目录里已经存有你自己的配置，请先备份（例如 `mv ~/.config/hypr ~/.config/hypr.bak`）—— `cp -r` 会覆盖单个文件，但不会做智能合并。
 
 ### 配置你的显示器
 
@@ -293,17 +354,7 @@ hl.monitor({ output = "HDMI-A-1", mode = "3840x2160@120", position = "0x0", scal
 
 保存文件后 Hyprland 会自动热加载新的显示器设置。如果你把输出名拼错了，屏幕会变黑 —— 先尝试按 `Super+M` 关闭 Hyprland 会话回到 TTY，在那里修好这一行后再运行 `start-hyprland`。如果这个快捷键也不响应，用 `Ctrl+Alt+F2` 切到一个新的 TTY，在那里修好后再用 `Ctrl+Alt+F1` 切回去。
 
-顺便在 [config/hypr/hyprpaper.conf](config/hypr/hyprpaper.conf) 里设置你的壁纸：
-
-```ini
-wallpaper {
-    monitor = 
-    path = /usr/share/hypr/wall2.png
-    fit_mode = cover
-}
-```
-
-`monitor =` 留空表示对所有显示器生效；否则指定一个输出名（例如 `HDMI-A-1`）。
+壁纸由 Wayle 单独管理；默认图片命令以及如何改用其他路径，请参阅[安装 Wayle](#安装-wayle)一节。
 
 ### Wayland 与 XWayland 兼容性
 
@@ -411,7 +462,7 @@ sudo pacman -S obs-studio
 按上面所有步骤安装好、并把 dotfiles 放到位之后，我的 ROG 桌面机上的画面看起来是这样：
 
 <p align="center">
-  <img src="screenshot.png" alt="My configured Hyprland desktop" width="900">
+  <img src="arch.png" alt="配置完成后的 Hyprland 桌面" width="900">
 </p>
 
 ---

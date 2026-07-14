@@ -5,7 +5,7 @@ A personal, beginner-friendly walkthrough for installing Arch Linux on a single 
 *个人向、面向新手的 Arch Linux 安装与配置指南——从单块 NVMe SSD 上的全新安装，一路到一台日常可用的 Hyprland 工作站，并附带我实际使用的所有 dotfiles、字体与配置文件。*
 
 <p align="center">
-  <img src="screenshot.png" alt="The finished Hyprland desktop on my ROG machine" width="900">
+  <img src="arch.png" alt="The finished Hyprland desktop on my ROG machine" width="900">
 </p>
 
 ---
@@ -17,8 +17,8 @@ A personal, beginner-friendly walkthrough for installing Arch Linux on a single 
 | Path | Purpose |
 |---|---|
 | [INSTALL.md](INSTALL.md) | Step-by-step base installation guide — booting from USB, partitioning with `gdisk`, formatting with `mkfs`, `pacstrap`, `arch-chroot`, GRUB, user setup. |
-| [CONFIG.md](CONFIG.md) | Post-install configuration — zsh + Oh My Zsh, Hyprland (+ kitty, dolphin, waybar, dunst, …), PipeWire audio, fonts, fcitx5 Chinese input, NVIDIA drivers, AUR helper, VS Code dotfiles. |
-| [config/](config/) | My personal dotfiles for Hyprland, kitty, micro, and fontconfig — drop them into `~/.config/`. |
+| [CONFIG.md](CONFIG.md) | Post-install configuration — zsh + Oh My Zsh, Hyprland + Wayle (desktop bar, notifications, and wallpaper), kitty, Dolphin, PipeWire audio, fonts, fcitx5 Chinese input, NVIDIA drivers, an AUR helper, and VS Code dotfiles. |
+| [config/](config/) | My personal dotfiles for Hyprland, Wayle, kitty, micro, and fontconfig — drop them into `~/.config/`. |
 | [fonts/](fonts/) | The patched **Consolas Nerd Font** (Regular + Italic) referenced by the kitty config. |
 | [INSTALL_SC.md](INSTALL_SC.md) / [CONFIG_SC.md](CONFIG_SC.md) | Simplified Chinese translations (machine-generated; English versions are canonical). |
 
@@ -55,8 +55,8 @@ Then read `INSTALL.md` end-to-end for the base install, followed by `CONFIG.md` 
 | 路径 | 作用 |
 |---|---|
 | [INSTALL.md](INSTALL.md) | 一步步的基础安装指南——从 U 盘启动、用 `gdisk` 分区、用 `mkfs` 格式化、`pacstrap`、`arch-chroot`、GRUB，直到用户配置。 |
-| [CONFIG.md](CONFIG.md) | 安装后的配置——zsh + Oh My Zsh、Hyprland(及 kitty、dolphin、waybar、dunst 等)、PipeWire 音频、字体、fcitx5 中文输入法、NVIDIA 显卡驱动、AUR 助手、VS Code 配置。 |
-| [config/](config/) | 我个人的 dotfiles，包含 Hyprland、kitty、micro 以及 fontconfig 的配置——直接复制到 `~/.config/` 即可。 |
+| [CONFIG.md](CONFIG.md) | 安装后的配置——zsh + Oh My Zsh、Hyprland + Wayle（桌面栏、通知和壁纸）、kitty、Dolphin、PipeWire 音频、字体、fcitx5 中文输入法、NVIDIA 显卡驱动、AUR 助手以及 VS Code 配置。 |
+| [config/](config/) | 我个人的 dotfiles，包含 Hyprland、Wayle、kitty、micro 以及 fontconfig 的配置——直接复制到 `~/.config/` 即可。 |
 | [fonts/](fonts/) | kitty 配置所引用的、打过补丁的 **Consolas Nerd Font**(Regular + Italic)。 |
 | [INSTALL_SC.md](INSTALL_SC.md) / [CONFIG_SC.md](CONFIG_SC.md) | 简体中文译文(机器翻译；以英文版为准)。 |
 

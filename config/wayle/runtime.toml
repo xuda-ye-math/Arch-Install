@@ -1,0 +1,27 @@
+[[bar.layout]]
+monitor = "*"
+show = true
+left = [
+    "clock",
+    "cpu",
+    "ram",
+]
+center = ["media"]
+right = [
+    "network",
+    "microphone",
+    "volume",
+    "notifications",
+]
+
+[styling.palette]
+bg = "#eff1f5"
+surface = "#e6e9ef"
+elevated = "#dce0e8"
+fg = "#4c4f69"
+fg-muted = "#5c5f77"
+primary = "#7287fd"
+red = "#f66151"
+yellow = "#df8e1d"
+green = "#40a02b"
+blue = "#3584e4"
