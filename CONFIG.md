@@ -255,18 +255,15 @@ The default toggle to switch between Chinese and English is **Ctrl+Space**.
 
 ### Install TeX Live
 
-Install the TeX Live components from the official Arch repositories with `pacman`:
+Install TeX Live with the AUR installer:
 
 ```bash
-sudo pacman -S texlive-basic texlive-bin texlive-binextra texlive-latex \
-  texlive-latexextra texlive-latexrecommended texlive-luatex texlive-xetex \
-  texlive-fontsrecommended texlive-mathscience texlive-pictures \
-  texlive-langchinese texlive-langcjk
+yay -S texlive-installer
 ```
 
-This is roughly the set I rely on: the core engines (`texlive-bin`, `texlive-latex`, `texlive-luatex`, `texlive-xetex`), recommended/extra LaTeX packages, math and science macros, graphics support, and Chinese/CJK language data.
+The installation is a bit slow, but this method is simple and safe.
 
-> ⚠️ **Be cautious with the AUR `texlive-full` meta-package.** During the build it sometimes fetches a newer release straight from the upstream TeX Live website that is ahead of the version currently in the AUR, leaving you with a mix of versions that no longer line up with the official Arch `texlive-*` packages and can break compilations until things resync. The individual `texlive-*` packages above stay in lockstep via `pacman -Syu`, which I find more predictable.
+> ⚠️ **Be cautious with the AUR `texlive-full` meta-package.** During the build it sometimes fetches a newer release straight from the upstream TeX Live website that is ahead of the version currently in the AUR, leaving you with a mix of versions that no longer line up with the official Arch `texlive-*` packages and can break compilations until things resync. Use `texlive-installer` as shown above instead.
 
 ### Useful third-party applications
 
