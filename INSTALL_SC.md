@@ -449,6 +449,10 @@ sudo pacman -Syu
 
 `-S` 调用同步操作，`-y` 从镜像源刷新软件包数据库，`-u` 把所有已安装的软件包升级到最新版本。在 Arch 中，日常的"系统更新"也是这一条命令——没有所谓"大版本升级"的概念。
 
+#### 设置你的 AI 助手
+
+连接互联网后，强烈建议安装 Codex 或 Claude Code 这样的终端 AI 助手。它可以在调整系统设置时为你节省大量时间。
+
 #### 安装桌面环境(可选)
 
 如果你想要图形界面，可以挑一个流行的桌面环境用 `pacman` 安装。常见的选择:
@@ -456,6 +460,8 @@ sudo pacman -Syu
 - **[GNOME](https://wiki.archlinux.org/title/GNOME)** —— 简洁、有自己的设计哲学、对触摸友好；体验上最接近 macOS。
 - **[KDE Plasma](https://wiki.archlinux.org/title/KDE)** —— 高度可定制，默认布局类似 Windows。
 - **[Cinnamon](https://wiki.archlinux.org/title/Cinnamon)** —— 传统的桌面布局风格，轻量级，对从 Linux Mint 过来的用户非常友好。
+- **[Xfce4](https://wiki.archlinux.org/title/Xfce)** —— 快速、轻量且易用；适合较旧的电脑。
+- **[LXQt](https://wiki.archlinux.org/title/LXQt)** —— 非常轻量、简单；适合希望少占用系统资源的用户。
 - **[Hyprland](https://wiki.archlinux.org/title/Hyprland)** —— 现代化的平铺式 Wayland 合成器，适合以键盘为中心的工作流。
 
 你也可以一直停留在纯命令行模式——对于服务器、开发机器或极简主义的搭建，这是完全合理的选择。Arch Wiki 上有一篇非常好的[可用桌面环境概览](https://wiki.archlinux.org/title/Desktop_environment)，其中包含安装命令和截图。

@@ -449,6 +449,10 @@ sudo pacman -Syu
 
 `-S` invokes the sync operation, `-y` refreshes the package database from the mirrors, and `-u` upgrades every installed package to its latest version. On Arch this is also how you do "the update" in general — there is no separate concept of major releases.
 
+#### Set up your AI agent
+
+Once you are connected to the internet, it is highly recommended that you install a terminal-based AI agent such as Codex or Claude Code. It can save you a lot of time when tuning your system's settings.
+
 #### Install a desktop environment (optional)
 
 If you want a graphical environment, pick one of the popular options and install it via `pacman`. Some common choices:
@@ -456,6 +460,8 @@ If you want a graphical environment, pick one of the popular options and install
 - **[GNOME](https://wiki.archlinux.org/title/GNOME)** — clean, opinionated, touch-friendly; closest to the macOS experience.
 - **[KDE Plasma](https://wiki.archlinux.org/title/KDE)** — highly configurable, Windows-like layout by default.
 - **[Cinnamon](https://wiki.archlinux.org/title/Cinnamon)** — traditional desktop metaphor, lightweight, great for users coming from Linux Mint.
+- **[Xfce4](https://wiki.archlinux.org/title/Xfce)** — fast, lightweight, and easy to use; good for older computers.
+- **[LXQt](https://wiki.archlinux.org/title/LXQt)** — very light and simple; good when you want to use fewer system resources.
 - **[Hyprland](https://wiki.archlinux.org/title/Hyprland)** — modern tiling Wayland compositor for keyboard-centric workflows.
 
 You can also stay in pure-CLI mode indefinitely — this is a perfectly valid choice for servers, dev boxes, or minimalist setups. The Arch Wiki has an excellent [overview of available desktop environments](https://wiki.archlinux.org/title/Desktop_environment) with installation commands and screenshots.
