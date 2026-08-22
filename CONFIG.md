@@ -184,6 +184,13 @@ The NVIDIA kernel modules are not loaded into the currently running kernel — a
 
 If your card is older than Turing or you encounter issues with the open modules, fall back to the proprietary blob with `sudo pacman -S nvidia nvidia-utils` instead.
 
+`nvidia-open` ships precompiled kernel modules, built against one specific kernel build. In very rare cases it can end up inconsistent with the latest Arch Linux kernel — the modules are installed, but not for the kernel you are actually running, and `nvidia-smi` fails as though the driver were missing. If that happens, either boot the LTS kernel instead, or switch to the DKMS package, which compiles the modules locally against whatever kernel you have:
+
+```bash
+sudo pacman -S linux-lts linux-lts-headers      # option 1: boot the LTS kernel instead
+sudo pacman -S linux-headers nvidia-open-dkms   # option 2: build the modules locally
+```
+
 For graphical GPU monitoring and overclocking, you can use [LACT](https://github.com/ilya-zlobintsev/LACT). Install it and enable its system service with:
 
 ```bash

@@ -184,6 +184,13 @@ NVIDIA 内核模块并不会被加载进当前运行的内核 —— 驱动要�
 
 如果你的显卡比 Turing 更老，或者使用开源模块时遇到问题，可以退回到专有 blob：`sudo pacman -S nvidia nvidia-utils`。
 
+`nvidia-open` 提供的是预编译的内核模块，只针对某一个特定的内核版本构建。在极少数情况下，它会与最新的 Arch Linux 内核对不上 —— 模块确实装上了，却不属于你实际运行的那个内核，此时 `nvidia-smi` 会像驱动缺失一样报错。遇到这种情况，可以改用 LTS 内核，或者换成 DKMS 版本的包：它会在本地针对你所安装的内核编译模块：
+
+```bash
+sudo pacman -S linux-lts linux-lts-headers      # 方案一：改用 LTS 内核
+sudo pacman -S linux-headers nvidia-open-dkms   # 方案二：在本地编译模块
+```
+
 如果想通过图形界面监控 GPU 并进行超频，可以使用 [LACT](https://github.com/ilya-zlobintsev/LACT)。安装后启用它的系统服务：
 
 ```bash
