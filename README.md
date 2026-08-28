@@ -1,3 +1,5 @@
+
+
 # Arch-Install
 
 A personal, beginner-friendly walkthrough for installing Arch Linux on a single NVMe SSD and turning it into a daily-driver Hyprland workstation — including all of the dotfiles, fonts, and configuration files I actually use.
@@ -18,7 +20,7 @@ A personal, beginner-friendly walkthrough for installing Arch Linux on a single 
 |---|---|
 | [INSTALL.md](INSTALL.md) | Step-by-step base installation guide — booting from USB, partitioning with `gdisk`, formatting with `mkfs`, `pacstrap`, `arch-chroot`, GRUB, user setup. |
 | [CONFIG.md](CONFIG.md) | Post-install configuration — zsh + Oh My Zsh, Hyprland + Wayle (desktop bar, notifications, and wallpaper), kitty, Dolphin, PipeWire audio, fonts, fcitx5 Chinese input, NVIDIA drivers, an AUR helper, and VS Code dotfiles. |
-| [config/](config/) | My personal dotfiles for Hyprland, Wayle, kitty, micro, and fontconfig — drop them into `~/.config/`. |
+| [config/](config/) | My personal dotfiles for Hyprland, Wayle, kitty, micro, VS Code, and fontconfig — drop them into `~/.config/`. |
 | [fonts/](fonts/) | The patched **Consolas Nerd Font** (Regular + Italic) referenced by the kitty config. |
 | [media/](media/) | Screenshots and the example OBS recording embedded in the guides. |
 | [INSTALL_SC.md](INSTALL_SC.md) / [CONFIG_SC.md](CONFIG_SC.md) | Simplified Chinese translations (machine-generated; English versions are canonical). |
